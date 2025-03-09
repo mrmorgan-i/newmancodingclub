@@ -103,7 +103,7 @@ const CTA: React.FC = () => {
                                         {!isValidEmail && (
                                             <p className="mt-1 text-left text-red-400 text-sm">{errorMessage}</p>
                                         )}
-                                        <p className="mt-1 text-left text-white/60 text-xs">Please use your Newman University email address</p>
+                                        <p className="mt-1 text-left text-white/60 text-xs">Help us fight bots! Please use your Newman University email address</p>
                                     </div>
                                     <div>
                                         <select 
@@ -112,7 +112,8 @@ const CTA: React.FC = () => {
                                         >
                                             <option value="" className="bg-gray-800">Your Major (Optional)</option>
                                             <option value="cs" className="bg-gray-800">Computer Science</option>
-                                            <option value="it" className="bg-gray-800">Information Technology</option>
+                                            <option value="it" className="bg-gray-800">Data Analytics</option>
+                                            <option value="it" className="bg-gray-800">Other (STEM)</option>
                                             <option value="other" className="bg-gray-800">Other</option>
                                         </select>
                                     </div>
