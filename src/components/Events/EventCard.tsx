@@ -43,7 +43,7 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                         "bg-primary hover:bg-primary-accent text-white": highlight, 
                         "bg-hero-background hover:bg-gray-200 text-foreground": !highlight 
                     })}>
-                        {highlight ? "Register Now" : "Learn More"}
+                        {highlight ? "Register Now" : "Anticipate!"}
                     </button>
                 </Link>
             </div>

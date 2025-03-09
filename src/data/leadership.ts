@@ -5,7 +5,7 @@ export const leaders: ILeader[] = [
         name: "Kelly Lotsu-Morgan",
         role: "President",
         bio: "Computer Science major with a passion for software development and teaching others how to code.",
-        avatar: "/images/leadership/president.jpg",
+        avatar: "/images/leadership/president.JPG",
         contact: "misraelkelly@gmail.com"
     },
     {
