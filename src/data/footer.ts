@@ -29,8 +29,9 @@ export const footerDetails: {
     email: 'coding.club@newmanu.edu',
     telephone: '',
     socials: {
-        github: 'https://github.com/newman-coding-club',
-        discord: 'https://discord.gg/example',
-        instagram: 'https://www.instagram.com'
+        github: 'https://github.com/newmancodingclub',
+        discord: 'https://discord.gg/b8whUeKn',
+        instagram: 'https://www.instagram.com/newmancodingclub/',
+        x: 'https://x.com/nucodingclub',
     }
 }
