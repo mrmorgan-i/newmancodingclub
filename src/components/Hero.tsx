@@ -24,21 +24,24 @@ const Hero: React.FC = () => {
                 <div className="mt-6">
                     <Link 
                         href="#join" 
-                        className="bg-primary hover:bg-primary-accent text-white px-8 py-3 rounded-full transition-colors font-medium"
+                        className="bg-primary hover:bg-primary-accent text-white px-8 py-3 rounded-full transition-colors font-medium transform hover:scale-105 duration-300 hover:shadow-lg"
                     >
                         Join Us
                     </Link>
                 </div>
-                <Image
-                    src={heroDetails.centerImageSrc}
-                    width={384}
-                    height={340}
-                    quality={100}
-                    sizes="(max-width: 768px) 100vw, 384px"
-                    priority={true}
-                    alt="Code editor with colorful syntax"
-                    className='relative mt-12 md:mt-16 mx-auto z-10'
-                />
+                <div className="relative mt-12 md:mt-16 mx-auto z-10 max-w-md">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-emerald-500/30 rounded-3xl blur-xl opacity-70 transform -rotate-3 scale-105"></div>
+                    <Image
+                        src={heroDetails.centerImageSrc}
+                        width={384}
+                        height={340}
+                        quality={100}
+                        sizes="(max-width: 768px) 100vw, 384px"
+                        priority={true}
+                        alt="Code editor with colorful syntax"
+                        className='relative rounded-2xl shadow-2xl border border-white/20 transform hover:scale-[1.02] transition-all duration-300'
+                    />
+                </div>
             </div>
         </section>
     );

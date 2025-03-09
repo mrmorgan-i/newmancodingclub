@@ -1,7 +1,7 @@
 const TechStack: React.FC = () => {
     return (
         <section id="tech-stack" className="py-16 px-5 bg-background">
-            <p className="text-lg font-medium text-center mb-6">Technologies we work with</p>
+            <p className="text-lg font-medium text-center mb-6">Some of the technologies we work with</p>
             <div className="mt-5 w-full flex flex-wrap flex-row items-center justify-evenly gap-8 sm:gap-12">
                 {/* HTML */}
                 <div className="text-center">
