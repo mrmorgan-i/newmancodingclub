@@ -67,9 +67,9 @@ const Footer: React.FC = () => {
                         <Image 
                             src="/images/newman-university-logo.png" 
                             alt="Newman University" 
-                            width={32} 
-                            height={32} 
-                            className="h-8"
+                            width={128} 
+                            height={128} 
+                            className="h-8 w-40"
                         />
                     </a>
                 </div>

@@ -13,7 +13,7 @@ export const leaders: ILeader[] = [
         role: "Vice President",
         bio: "Computer Science major focusing with a passion for game dev.",
         avatar: "/images/leadership/vp.jpg",
-        contact: "vincewong"
+        contact: "vincekyewong@gmail.com"
     },
     {
         name: "Ariana Sweitzer",
@@ -27,13 +27,13 @@ export const leaders: ILeader[] = [
         role: "Treasurer",
         bio: "Computer Science major with a passion for robotics.",
         avatar: "/images/leadership/treasurer.jpg",
-        contact: "neil"
+        contact: "neilscarberry@gmail.com"
     },
     {
         name: "Thatcher McClure",
         role: "Events Coordinator",
         bio: "Computer Science major. Super Nerd. Game dev.",
         avatar: "/images/leadership/events.jpg",
-        contact: "thatcher"
+        contact: "thatchermcclure@gmail.com"
     }
 ];
