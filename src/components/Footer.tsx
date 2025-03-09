@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { FaCode } from 'react-icons/fa';
+import Image from 'next/image';
 
 import { siteDetails } from '@/data/siteDetails';
 import { footerDetails } from '@/data/footer';
@@ -60,7 +61,18 @@ const Footer: React.FC = () => {
             </div>
             <div className="mt-8 md:text-center text-foreground-accent px-6">
                 <p>Copyright &copy; {new Date().getFullYear()} {siteDetails.siteName}. All rights reserved.</p>
-                <p className="text-sm mt-2 text-gray-500">Newman University Wichita</p>
+                <div className="flex items-center justify-center mt-4">
+                    <p className="text-sm font-bold mr-2">Powered by</p>
+                    <a href="https://newmanu.edu" target="_blank" rel="noopener noreferrer" className="inline-block">
+                        <Image 
+                            src="/images/newman-university-logo.png" 
+                            alt="Newman University" 
+                            width={32} 
+                            height={32} 
+                            className="h-8"
+                        />
+                    </a>
+                </div>
             </div>
         </footer>
     );
