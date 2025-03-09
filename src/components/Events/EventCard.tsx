@@ -38,14 +38,19 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                     </div>
                 </div>
                 
-                <Link href={registerLink} target="_blank" rel="noopener noreferrer">
-                    <button className={clsx("w-full py-3 px-4 rounded-full transition-colors", { 
-                        "bg-primary hover:bg-primary-accent text-white": highlight, 
-                        "bg-hero-background hover:bg-gray-200 text-foreground": !highlight 
-                    })}>
-                        {highlight ? "Register Now" : "Anticipate!"}
-                    </button>
-                </Link>
+                {highlight ? (
+                    // Clickable button for highlighted/next event
+                    <Link href={registerLink} target="_blank" rel="noopener noreferrer">
+                        <button className="w-full py-3 px-4 rounded-full transition-colors bg-primary hover:bg-primary-accent text-white">
+                            Register Now
+                        </button>
+                    </Link>
+                ) : (
+                    // Non-clickable label for future events
+                    <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
+                        Coming Soon
+                    </div>
+                )}
             </div>
             <div className="p-6 mt-1">
                 <p className="text-foreground-accent mb-4">{description}</p>

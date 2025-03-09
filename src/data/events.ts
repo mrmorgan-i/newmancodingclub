@@ -8,7 +8,7 @@ export const events: IEvent[] = [
         location: "TBD",
         description: "Join us for a fun evening of coding! We'll be working on Python scripting challenges together. All skill levels are welcome.",
         tags: ["Python", "Scripting", "Programming", "Beginner"],
-        registerLink: "#register"
+        registerLink: "https://forms.gle/"
     },
     {
         title: "Guest Appearance",
@@ -17,7 +17,7 @@ export const events: IEvent[] = [
         location: "TBD",
         description: "Special guest speaker from the tech industry. Topic and details to be announced soon!",
         tags: ["Version Control", "Collaboration", "Git"],
-        registerLink: "#register"
+        registerLink: "#"
     },
     {
         title: "Python Basics",
@@ -26,6 +26,6 @@ export const events: IEvent[] = [
         location: "Zoom Meeting",
         description: "Dive into Python programming! We'll cover syntax, data types, functions, and create simple programs together.",
         tags: ["Python", "Beginner", "Programming"],
-        registerLink: "#register"
+        registerLink: "#"
     }
 ];
