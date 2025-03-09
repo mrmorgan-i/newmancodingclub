@@ -8,7 +8,9 @@ export interface IBenefit {
     description: string;
     imageSrc: string;
     bullets: IBenefitBullet[]
-}export interface IProject {
+}
+
+export interface IProject {
     title: string;
     description: string;
     image: string;
@@ -36,22 +38,9 @@ export interface IBenefitBullet {
     icon: JSX.Element;
 }
 
-export interface IPricing {
-    name: string;
-    price: number | string;
-    features: string[];
-}
-
 export interface IFAQ {
     question: string;
     answer: string;
-}
-
-export interface ITestimonial {
-    name: string;
-    role: string;
-    message: string;
-    avatar: string;
 }
 
 export interface IStats {
