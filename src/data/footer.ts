@@ -26,7 +26,7 @@ export const footerDetails: {
             url: "#faq"
         }
     ],
-    email: 'coding.club@newmanu.edu',
+    email: 'newmancodingclub@gmail.com',
     telephone: '',
     socials: {
         github: 'https://github.com/newmancodingclub',

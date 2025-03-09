@@ -9,7 +9,7 @@ export const stats: IStats[] = [
         description: "No prior experience required. Everyone is welcome, regardless of major or coding background."
     },
     {
-        title: "2+ Meetings",
+        title: "1+ Meetings",
         icon: <FaUsers size={34} className="text-yellow-500" />,
         description: "Monthly gatherings with workshops, guest speakers, and collaborative coding sessions."
     },

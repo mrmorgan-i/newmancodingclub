@@ -4,7 +4,7 @@ export const projects: IProject[] = [
     {
         title: "Weather Dashboard",
         description: "A web app that displays current weather and 5-day forecast for any city using the OpenWeather API.",
-        image: "/images/testimonial-1.webp", // You'll need to replace these with appropriate images
+        image: "/images/testimonial-1.webp",
         tags: ["JavaScript", "API", "Bootstrap"],
         demoLink: "#demo",
         codeLink: "#code",
