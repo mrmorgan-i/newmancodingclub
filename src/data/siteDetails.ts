@@ -8,5 +8,5 @@ export const siteDetails = {
     language: 'en-us',
     locale: 'en-US',
     siteLogo: `${process.env.BASE_PATH || ''}/images/logo.png`,
-    googleAnalyticsId: 'G-EMHBLSXMQM',
+    googleAnalyticsId: 'G-B71668YSQK',
 }

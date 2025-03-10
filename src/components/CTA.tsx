@@ -76,7 +76,7 @@ const CTA: React.FC = () => {
                                 </div>
                             ) : (
                                 <form 
-                                    action="https://formspree.io/f/moveazyg" 
+                                    action="https://formspree.io/f/mdkeonwp" 
                                     method="POST"
                                     className="space-y-4"
                                     onSubmit={validateForm}
