@@ -79,12 +79,12 @@ export default function RootLayout({
               logo: `${siteDetails.siteUrl}/images/logo.png`,
               contactPoint: {
                 '@type': 'ContactPoint',
-                email: 'coding.club@newmanu.edu',
+                email: 'newmancodingclub@gmail.com',
                 contactType: 'customer service'
               },
               description: siteDetails.metadata.description,
               sameAs: [
-                'https://github.com/newman-coding-club',
+                'https://github.com/newmancodingclub',
                 'https://www.instagram.com/newmancodingclub'
               ]
             })
