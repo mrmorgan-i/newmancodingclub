@@ -11,7 +11,7 @@ export const leaders: ILeader[] = [
     {
         name: "Vince Wong",
         role: "Vice President",
-        bio: "Computer Science major focusing with a passion for game dev.",
+        bio: "Computer Science major with an interest in game dev.",
         avatar: "/images/leadership/vp.jpg",
         contact: "vincekyewong@gmail.com"
     },
