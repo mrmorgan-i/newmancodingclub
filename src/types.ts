@@ -32,6 +32,14 @@ export interface ILeader {
     contact: string;
 }
 
+export interface IAdvisor {
+    name: string;
+    role: string;
+    bio: string;
+    avatar: string;
+    contact: string;
+}
+
 export interface IBenefitBullet {
     title: string;
     description: string;
