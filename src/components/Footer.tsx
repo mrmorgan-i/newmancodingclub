@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
                             alt="Newman Coding Club Logo" 
                             width={20} 
                             height={20} 
-                            className="min-w-fit md:w-7 md:h-7" 
+                            className="min-w-fit w-7 h-7" 
                         />
                         <h3 className="manrope text-xl font-semibold cursor-pointer">
                             {siteDetails.siteName}
