@@ -4,8 +4,11 @@ import { ctaDetails } from "@/data/cta";
 
 const CTA: React.FC = () => {
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [isValidEmail, setIsValidEmail] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [isValidPhone, setIsValidPhone] = useState(true);
+    const [emailErrorMessage, setEmailErrorMessage] = useState("");
+    const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
     // Handle email change
@@ -15,35 +18,74 @@ const CTA: React.FC = () => {
         
         // Clear errors on change
         setIsValidEmail(true);
-        setErrorMessage("");
+        setEmailErrorMessage("");
+    };
+
+    // Handle phone change and formatting
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Remove all non-digit characters
+        const rawPhone = e.target.value.replace(/\D/g, '');
+        
+        // Format the phone number
+        let formattedPhone = '';
+        if (rawPhone.length > 0) {
+            formattedPhone = `(${rawPhone.slice(0, 3)}${rawPhone.length > 3 ? `) ${rawPhone.slice(3, 6)}` : ''}${rawPhone.length > 6 ? `-${rawPhone.slice(6, 10)}` : ''}`;
+        }
+        
+        setPhone(formattedPhone);
+        
+        // Clear errors on change
+        setIsValidPhone(true);
+        setPhoneErrorMessage("");
+    };
+
+    // Validate phone number
+    const validatePhoneNumber = (phoneNum: string): boolean => {
+        // Remove non-digit characters for validation
+        const cleanPhone = phoneNum.replace(/\D/g, '');
+        
+        // Check if the phone number is exactly 10 digits
+        return cleanPhone.length === 10;
     };
 
     // Form validation
     const validateForm = (e: React.FormEvent) => {
         e.preventDefault();
+        let isValid = true;
         
-        // Basic email validation
+        // Email validation
         if (!email) {
             setIsValidEmail(false);
-            setErrorMessage("Email is required");
-            return false;
+            setEmailErrorMessage("Email is required");
+            isValid = false;
+        } else if (!email.toLowerCase().endsWith("@newmanu.edu")) {
+            setIsValidEmail(false);
+            setEmailErrorMessage("Please use your Newman University email (@newmanu.edu)");
+            isValid = false;
         }
         
-        // Check if it's a Newman email
-        if (!email.toLowerCase().endsWith("@newmanu.edu")) {
-            setIsValidEmail(false);
-            setErrorMessage("Please use your Newman University email (@newmanu.edu)");
+        // Phone validation
+        if (!phone) {
+            setIsValidPhone(false);
+            setPhoneErrorMessage("Phone number is required");
+            isValid = false;
+        } else if (!validatePhoneNumber(phone)) {
+            setIsValidPhone(false);
+            setPhoneErrorMessage("Please enter a valid 10-digit phone number");
+            isValid = false;
+        }
+        
+        // If validation fails, prevent form submission
+        if (!isValid) {
             return false;
         }
         
         // If all validations pass
-        setIsValidEmail(true);
-        setErrorMessage("");
+        setSubmitted(true);
         
         // Submit the form
         const form = e.target as HTMLFormElement;
         form.submit();
-        setSubmitted(true);
         
         return true;
     };
@@ -101,9 +143,24 @@ const CTA: React.FC = () => {
                                             className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidEmail ? 'border-red-500' : 'border-white/30'} focus:outline-none focus:ring-2 focus:ring-primary/50`}
                                         />
                                         {!isValidEmail && (
-                                            <p className="mt-1 text-left text-red-400 text-sm">{errorMessage}</p>
+                                            <p className="mt-1 text-left text-red-400 text-sm">{emailErrorMessage}</p>
                                         )}
                                         <p className="mt-1 text-left text-white/60 text-xs">Help us fight bots! Please use your Newman University email address</p>
+                                    </div>
+                                    <div>
+                                        <input 
+                                            type="tel" 
+                                            name="phone"
+                                            value={phone}
+                                            onChange={handlePhoneChange}
+                                            placeholder="Phone Number (For GroupMe)" 
+                                            required
+                                            className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidPhone ? 'border-red-500' : 'border-white/30'} focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                                        />
+                                        {!isValidPhone && (
+                                            <p className="mt-1 text-left text-red-400 text-sm">{phoneErrorMessage}</p>
+                                        )}
+                                        <p className="mt-1 text-left text-white/60 text-xs">Please enter a 10-digit phone number for GroupMe</p>
                                     </div>
                                     <div>
                                         <select 
