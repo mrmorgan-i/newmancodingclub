@@ -33,5 +33,6 @@ export const footerDetails: {
         discord: 'https://discord.gg/b8whUeKn',
         instagram: 'https://www.instagram.com/newmancodingclub/',
         x: 'https://x.com/nucodingclub',
+        groupme: 'https://groupme.com/join_group/106407244/ylKLTabX',
     }
 }
