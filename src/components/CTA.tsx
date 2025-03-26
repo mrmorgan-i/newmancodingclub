@@ -169,8 +169,8 @@ const CTA: React.FC = () => {
                                         >
                                             <option value="" className="bg-gray-800">Your Major (Optional)</option>
                                             <option value="cs" className="bg-gray-800">Computer Science</option>
-                                            <option value="it" className="bg-gray-800">Data Analytics</option>
-                                            <option value="it" className="bg-gray-800">Other (STEM)</option>
+                                            <option value="da" className="bg-gray-800">Data Analytics</option>
+                                            <option value="stem" className="bg-gray-800">Other (STEM)</option>
                                             <option value="other" className="bg-gray-800">Other</option>
                                         </select>
                                     </div>
