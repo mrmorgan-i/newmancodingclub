@@ -160,7 +160,7 @@ const CTA: React.FC = () => {
                                         {!isValidPhone && (
                                             <p className="mt-1 text-left text-red-400 text-sm">{phoneErrorMessage}</p>
                                         )}
-                                        <p className="mt-1 text-left text-white/60 text-xs">Please enter a 10-digit phone number for GroupMe</p>
+                                        <p className="mt-1 text-left text-white/60 text-xs">Please enter a 10-digit phone number to be added to our GroupMe</p>
                                     </div>
                                     <div>
                                         <select 
