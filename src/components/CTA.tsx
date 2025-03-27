@@ -168,8 +168,8 @@ const CTA: React.FC = () => {
                                             className="w-full px-4 py-3 rounded-md bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
                                         >
                                             <option value="" className="bg-gray-800">Your Major (Optional)</option>
-                                            <option value="other" className="bg-gray-800">Fine Arts</option>
-                                            <option value="other" className="bg-gray-800">Healthcare</option>
+                                            <option value="fa" className="bg-gray-800">Fine Arts</option>
+                                            <option value="hc" className="bg-gray-800">Healthcare</option>
                                             <option value="stem" className="bg-gray-800">STEM</option>
                                             <option value="da" className="bg-gray-800">Data Analytics</option>
                                             <option value="cs" className="bg-gray-800">Computer Science</option>                             
