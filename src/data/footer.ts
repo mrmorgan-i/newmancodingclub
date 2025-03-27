@@ -30,9 +30,10 @@ export const footerDetails: {
     telephone: '',
     socials: {
         github: 'https://github.com/newmancodingclub',
-        discord: 'https://discord.gg/b8whUeKn',
-        instagram: 'https://www.instagram.com/newmancodingclub/',
-        x: 'https://x.com/nucodingclub',
         groupme: 'https://groupme.com/join_group/106407244/ylKLTabX',
+        instagram: 'https://www.instagram.com/newmancodingclub/',
+        slack: "https://join.slack.com/t/newman-coding-club/shared_invite/zt-32f7dfd3r-~ZoHuzue5NsycAC1Ll1B_Q",
+        discord: 'https://discord.gg/b8whUeKn',
+        x: 'https://x.com/nucodingclub',
     }
 }

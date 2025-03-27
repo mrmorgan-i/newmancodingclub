@@ -1,4 +1,4 @@
-import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaThreads, FaTwitter, FaXTwitter, FaYoutube, FaDiscord } from "react-icons/fa6";
+import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaThreads, FaTwitter, FaXTwitter, FaYoutube, FaDiscord, FaSlack } from "react-icons/fa6";
 import { SiGroupme } from "react-icons/si";
 
 export const getPlatformIconByName = (platformName: string): JSX.Element | null => {
@@ -32,6 +32,9 @@ export const getPlatformIconByName = (platformName: string): JSX.Element | null 
         }
         case 'groupme': {
             return <SiGroupme size={24} className='min-w-fit' />;
+        }
+        case 'slack': {
+            return <FaSlack size={24} className='min-w-fit' />;
         }
         default:
             console.log('Platform name not supported, no icon is returned:', platformName);
