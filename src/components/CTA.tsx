@@ -3,13 +3,20 @@ import React, { useState } from "react";
 import { ctaDetails } from "@/data/cta";
 
 const CTA: React.FC = () => {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [major, setMajor] = useState("");
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isValidPhone, setIsValidPhone] = useState(true);
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+    // Handle name change
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value);
+    };
 
     // Handle email change
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +46,11 @@ const CTA: React.FC = () => {
         setPhoneErrorMessage("");
     };
 
+    // Handle major change
+    const handleMajorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setMajor(e.target.value);
+    };
+
     // Validate phone number
     const validatePhoneNumber = (phoneNum: string): boolean => {
         // Remove non-digit characters for validation
@@ -49,8 +61,7 @@ const CTA: React.FC = () => {
     };
 
     // Form validation
-    const validateForm = (e: React.FormEvent) => {
-        e.preventDefault();
+    const validateForm = (): boolean => {
         let isValid = true;
         
         // Email validation
@@ -75,19 +86,47 @@ const CTA: React.FC = () => {
             isValid = false;
         }
         
-        // If validation fails, prevent form submission
-        if (!isValid) {
-            return false;
+        return isValid;
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
         }
         
-        // If all validations pass
-        setSubmitted(true);
+        setSubmissionStatus('submitting');
         
-        // Submit the form
-        const form = e.target as HTMLFormElement;
-        form.submit();
-        
-        return true;
+        try {
+            const response = await fetch('/api/join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    phone,
+                    major
+                }),
+            });
+            
+            if (response.ok) {
+                setSubmissionStatus('success');
+                // Reset form
+                setName("");
+                setEmail("");
+                setPhone("");
+                setMajor("");
+            } else {
+                setSubmissionStatus('error');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setSubmissionStatus('error');
+        }
     };
 
     return (
@@ -106,7 +145,7 @@ const CTA: React.FC = () => {
                         <div className="w-full max-w-md bg-white/10 backdrop-blur-sm rounded-lg p-6">
                             <h3 className="text-xl font-medium mb-4">Sign Up for Updates</h3>
                             
-                            {submitted ? (
+                            {submissionStatus === 'success' ? (
                                 <div className="text-center py-8">
                                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
                                         <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -114,14 +153,13 @@ const CTA: React.FC = () => {
                                         </svg>
                                     </div>
                                     <h4 className="text-xl font-semibold mb-2">Thank You!</h4>
-                                    <p>We&apos;ve received your information and will keep you updated about club activities.</p>
+                                    <p className="mb-3">We&apos;ve received your information and you&apos;re now officially part of the Newman Coding Club!</p>
+                                    <p className="text-sm">Please check your Newman University email for a welcome message with the GroupMe link and next steps.</p>
                                 </div>
                             ) : (
                                 <form 
-                                    action={process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT}
-                                    method="POST"
                                     className="space-y-4"
-                                    onSubmit={validateForm}
+                                    onSubmit={handleSubmit}
                                 >
                                     <div>
                                         <input 
@@ -129,6 +167,8 @@ const CTA: React.FC = () => {
                                             name="name"
                                             placeholder="Name" 
                                             required
+                                            value={name}
+                                            onChange={handleNameChange}
                                             className="w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
                                         />
                                     </div>
@@ -165,6 +205,8 @@ const CTA: React.FC = () => {
                                     <div>
                                         <select 
                                             name="major"
+                                            value={major}
+                                            onChange={handleMajorChange}
                                             className="w-full px-4 py-3 rounded-md bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
                                         >
                                             <option value="" className="bg-gray-800">Your Major (Optional)</option>
@@ -175,13 +217,16 @@ const CTA: React.FC = () => {
                                             <option value="cs" className="bg-gray-800">Computer Science</option>                             
                                         </select>
                                     </div>
-                                    <input type="hidden" name="_subject" value="New Newman Coding Club Signup!" />
                                     <button 
                                         type="submit" 
-                                        className="w-full bg-primary hover:bg-primary-accent text-white font-medium py-3 px-4 rounded-md transition-colors"
+                                        disabled={submissionStatus === 'submitting'}
+                                        className="w-full bg-primary hover:bg-primary-accent text-white font-medium py-3 px-4 rounded-md transition-colors disabled:bg-primary/50 disabled:cursor-not-allowed"
                                     >
-                                        Join the Club
+                                        {submissionStatus === 'submitting' ? 'Processing...' : 'Join the Club'}
                                     </button>
+                                    {submissionStatus === 'error' && (
+                                        <p className="text-red-400 text-sm">There was a problem processing your request. Please try again.</p>
+                                    )}
                                 </form>
                             )}
                         </div>
