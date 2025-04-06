@@ -153,8 +153,8 @@ const CTA: React.FC = () => {
                                         </svg>
                                     </div>
                                     <h4 className="text-xl font-semibold mb-2">Thank You!</h4>
-                                    <p className="mb-3">We&apos;ve received your information and you&apos;re now officially part of the Newman Coding Club!</p>
-                                    <p className="text-sm">Please check your Newman University email for a welcome message with the GroupMe link and next steps.</p>
+                                    <p className="mb-3">We&apos;ve received your information and you&apos;re now officially part of the Newman Coding Club! Please check your Newman Email for an email from us.</p>
+                                    <p className="text-sm">Please check your inbox and junk folder - university email systems sometimes filter messages from external domains.</p>
                                 </div>
                             ) : (
                                 <form 

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const { name, email, phone, major } = await req.json();
 
-    // format major
+    // Format the major for display
     const formattedMajor = major ? 
       (major === 'fa' ? 'Fine Arts' : 
        major === 'hc' ? 'Healthcare' : 
@@ -18,9 +18,29 @@ export async function POST(req: Request) {
 
     // 1. First, send confirmation email to the student
     const studentEmailResult = await resend.emails.send({
-      from: 'Newman Coding Club <noreply@newmancoding.club>',
-      to: [email], // Student's email
+      from: 'Newman Coding Club <info@newmancoding.club>',
+      to: [email], // Send to student's email
       subject: 'Welcome to Newman Coding Club!',
+      // Plain text version to improve deliverability
+      text: `
+Welcome to Newman Coding Club!
+
+Hi ${name},
+
+Thank you for joining the Newman Coding Club! We're excited to have you with us and look forward to coding together.
+
+As a member, you'll have access to workshops, projects, events, and a supportive community of fellow student coders. No matter your experience level, we're here to help you learn and grow your programming skills.
+
+Next Steps:
+1. Join our GroupMe: https://groupme.com/join_group/106407244/ylKLTabX
+2. Check your email for upcoming meeting announcements
+3. Follow us on social media for club updates
+
+See you at our next meeting!
+
+Newman Coding Club Team
+Newman University Wichita
+      `,
       html: `
 <!DOCTYPE html>
 <html>
@@ -112,24 +132,25 @@ export async function POST(req: Request) {
                         <a href="https://groupme.com/join_group/106407244/ylKLTabX" style="background-color: #3e9ba2; border-radius: 50px; color: white; display: inline-block; font-size: 16px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-align: center;">Join Our GroupMe</a>
                       </div>
                       
+                      <!-- Direct Link (in case button doesn't work) -->
+                      <div style="text-align: center; margin-bottom: 25px; font-size: 14px;">
+                        <p>Or copy and paste this link in your browser:</p>
+                        <p style="word-break: break-all;">https://groupme.com/join_group/106407244/ylKLTabX</p>
+                      </div>
+                      
                       <!-- Social Links -->
                       <div style="text-align: center; margin-bottom: 25px;">
                         <p style="margin-bottom: 10px; font-weight: bold;">Connect with us:</p>
-                        <a href="https://github.com/newmancodingclub" style="text-decoration: none; margin: 0 5px; display: inline-block;">
-                          <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub" style="width: 24px; height: 24px;">
-                        </a>
-                        <a href="https://www.instagram.com/newmancodingclub/" style="text-decoration: none; margin: 0 5px; display: inline-block;">
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png" alt="Instagram" style="width: 24px; height: 24px;">
-                        </a>
-                        <a href="https://discord.gg/b8whUeKn" style="text-decoration: none; margin: 0 5px; display: inline-block;">
-                          <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" alt="Discord" style="width: 24px; height: 24px;">
-                        </a>
+                        <p>
+                          GitHub: github.com/newmancodingclub<br>
+                          Instagram: instagram.com/newmancodingclub/<br>
+                          Discord: discord.gg/b8whUeKn
+                        </p>
                       </div>
                       
                       <!-- Signature -->
                       <p style="margin-top: 30px; margin-bottom: 5px;">See you at our next meeting!</p>
-                      <p style="margin-top: 0; margin-bottom: 0;"><strong>Ariana Sweitzer</strong></p>
-                        <p style="margin-top: 0; margin-bottom: 0;">Secretary, Newman Coding Club</p>
+                      <p style="margin-top: 0; margin-bottom: 0;"><strong>Newman Coding Club Team</strong></p>
                     </td>
                   </tr>
                 </table>
@@ -167,9 +188,24 @@ export async function POST(req: Request) {
 
     // 2. Send notification email to the club admin
     const adminEmailResult = await resend.emails.send({
-      from: 'Newman Coding Club <noreply@newmancoding.club>',
+      from: 'Newman Coding Club <info@newmancoding.club>',
       to: [process.env.RESEND_EMAIL || 'newmancodingclub@gmail.com'],
-      subject: 'New Club Signup!',
+      subject: 'New Member Signup!',
+      // Plain text version to improve deliverability
+      text: `
+New Newman Coding Club Member!
+
+A new member has signed up:
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Major: ${formattedMajor}
+
+An automatic welcome email with the GroupMe link has been sent to the student.
+
+To contact the student directly: ${email}
+      `,
       html: `
 <!DOCTYPE html>
 <html>
