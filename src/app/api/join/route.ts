@@ -129,28 +129,29 @@ Newman University Wichita
                       
                       <!-- CTA Button -->
                       <div style="text-align: center; margin: 30px 0;">
-                        <a href="https://groupme.com/join_group/106407244/ylKLTabX" style="background-color: #3e9ba2; border-radius: 50px; color: white; display: inline-block; font-size: 16px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-align: center;">Join Our GroupMe</a>
+                        <a href="https://newmancoding.club/groupme" style="background-color: #3e9ba2; border-radius: 50px; color: white; display: inline-block; font-size: 16px; font-weight: bold; padding: 12px 25px; text-decoration: none; text-align: center;">Join Our GroupMe</a>
                       </div>
                       
                       <!-- Direct Link (in case button doesn't work) -->
                       <div style="text-align: center; margin-bottom: 25px; font-size: 14px;">
                         <p>Or copy and paste this link in your browser:</p>
-                        <p style="word-break: break-all;">https://groupme.com/join_group/106407244/ylKLTabX</p>
+                        <p style="word-break: break-all;">https://newmancoding.club</p>
                       </div>
                       
                       <!-- Social Links -->
                       <div style="text-align: center; margin-bottom: 25px;">
                         <p style="margin-bottom: 10px; font-weight: bold;">Connect with us:</p>
                         <p>
-                          GitHub: github.com/newmancodingclub<br>
-                          Instagram: instagram.com/newmancodingclub/<br>
-                          Discord: discord.gg/b8whUeKn
+                          GitHub: newmancoding.club/github<br>
+                          Instagram: newmancoding.club/instagram/<br>
+                          Discord: newmancoding.club/discord/<br>
                         </p>
                       </div>
                       
                       <!-- Signature -->
                       <p style="margin-top: 30px; margin-bottom: 5px;">See you at our next meeting!</p>
-                      <p style="margin-top: 0; margin-bottom: 0;"><strong>Newman Coding Club Team</strong></p>
+                      <p style="margin-top: 0; margin-bottom: 0;"><strong>Ariana Sweitzer</strong></p>
+                      <p style="margin-top: 0; margin-bottom: 0;">Secretary, Newman Coding Club</p>
                     </td>
                   </tr>
                 </table>

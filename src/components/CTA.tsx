@@ -146,15 +146,26 @@ const CTA: React.FC = () => {
                             <h3 className="text-xl font-medium mb-4">Sign Up for Updates</h3>
                             
                             {submissionStatus === 'success' ? (
-                                <div className="text-center py-8">
+                                <div className="text-center py-6">
                                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
                                         <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
-                                    <h4 className="text-xl font-semibold mb-2">Thank You!</h4>
-                                    <p className="mb-3">We&apos;ve received your information and you&apos;re now officially part of the Newman Coding Club! Please check your Newman Email for an email from us.</p>
-                                    <p className="text-sm">Please check your inbox and junk folder - university email systems sometimes filter messages from external domains.</p>
+                                    <h4 className="text-xl font-semibold mb-4">Welcome to the Club!</h4>
+                                    
+                                    <a 
+                                        href="https://groupme.com/join_group/106407244/ylKLTabX" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="block w-full bg-primary hover:bg-primary-accent text-white font-medium py-3 px-4 rounded-md transition-colors mb-4"
+                                    >
+                                        Join Our GroupMe
+                                    </a>
+                                    
+                                    <p className="text-sm opacity-90">
+                                        We&apos;ve sent you a welcome email with additional information. Please check your inbox (and junk folder)--and pretty please add us to your contacts!
+                                    </p>
                                 </div>
                             ) : (
                                 <form 
