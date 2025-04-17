@@ -2,13 +2,13 @@ import { IEvent } from "@/types";
 
 export const events: IEvent[] = [
     {
-        title: "Coding Jam Session - Scripting with Python",
-        date: "TBD",
-        time: "6:00 PM - 8:00 PM",
+        title: "Dessert and Intros: Meet the Newman Coding Club",
+        date: "May 7, 2025",
+        time: "1:00 PM - 2:00 PM",
         location: "TBD",
-        description: "Join us for a fun evening of coding! We'll be working on Python scripting challenges together. All skill levels are welcome.",
-        tags: ["Python", "Scripting", "Programming", "Beginner"],
-        registerLink: "https://forms.gle/"
+        description: "Join us for a sweet treat and get to know the Newman Coding Club! We'll introduce our team, share our goals, and discuss upcoming events. Perfect for new members!",
+        tags: ["Introductory", "Networking", "Dessert"],
+        registerLink: "https://forms.office.com/r/jFgiGjjmPE"
     },
     {
         title: "Guest Appearance",
