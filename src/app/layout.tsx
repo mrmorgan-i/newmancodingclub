@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { Analytics } from '@vercel/analytics/next';
 import { Source_Sans_3, Manrope } from "next/font/google";
 
 import Header from "@/components/Header";
@@ -102,6 +103,7 @@ export default function RootLayout({
         <Header />
         <main>
           {children}
+          <Analytics />
         </main>
         <Footer />
       </body>
