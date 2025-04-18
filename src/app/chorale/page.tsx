@@ -3,6 +3,12 @@
 import Link from 'next/link';
 import { FaArrowLeft, FaShare, FaPlay } from 'react-icons/fa';
 import { useState } from 'react';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Newman University Chorale Videos | Newman Coding Club",
+  description: "Watch performances by Deanne Zoggleman, hosted by Newman Coding Club as part of our campus collaboration initiatives.",
+};
 
 // Video data
 const videos = [
