@@ -36,15 +36,18 @@ const Header: React.FC = () => {
 
                     {/* Desktop Menu */}
                     <ul className="hidden md:flex space-x-6">
-                        {menuItems.map(item => (
-                            <li key={item.text}>
-                                <Link href={item.url} className="text-foreground hover:text-foreground-accent transition-colors">
-                                    {item.text}
-                                </Link>
-                            </li>
-                        ))}
+                    {menuItems.map(item => (
+                        <li key={item.text}>
+                            <Link 
+                            href={item.url.startsWith('#') ? `/${item.url}` : item.url} 
+                            className="text-foreground hover:text-foreground-accent transition-colors"
+                            >
+                            {item.text}
+                            </Link>
+                        </li>
+                    ))}
                         <li>
-                            <Link href="#join" className="text-white bg-primary hover:bg-primary-accent px-8 py-3 rounded-full transition-colors">
+                            <Link href="/#join" className="text-white bg-primary hover:bg-primary-accent px-8 py-3 rounded-full transition-colors">
                                 Join Us
                             </Link>
                         </li>
@@ -82,15 +85,23 @@ const Header: React.FC = () => {
             >
                 <div id="mobile-menu" className="md:hidden bg-white shadow-lg">
                     <ul className="flex flex-col space-y-4 pt-1 pb-6 px-6">
-                        {menuItems.map(item => (
-                            <li key={item.text}>
-                                <Link href={item.url} className="text-foreground hover:text-primary block" onClick={toggleMenu}>
-                                    {item.text}
-                                </Link>
-                            </li>
-                        ))}
+                    {menuItems.map(item => (
+                        <li key={item.text}>
+                            <Link 
+                            href={item.url.startsWith('#') ? `/${item.url}` : item.url} 
+                            className="text-foreground hover:text-primary block" 
+                            onClick={toggleMenu}
+                            >
+                            {item.text}
+                            </Link>
+                        </li>
+                    ))}
                         <li>
-                            <Link href="#join" className="text-white bg-primary hover:bg-primary-accent px-5 py-2 rounded-full block w-fit" onClick={toggleMenu}>
+                            <Link 
+                                href="/#join" 
+                                className="text-white bg-primary hover:bg-primary-accent px-5 py-2 rounded-full block w-fit" 
+                                onClick={toggleMenu}
+                            >
                                 Join Us
                             </Link>
                         </li>
