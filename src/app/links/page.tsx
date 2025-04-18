@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaGithub, FaInstagram, FaDiscord, FaSlack, FaUsers } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+// import X logo
+
 
 export default function Links() {
   // Define all the links
@@ -36,7 +39,13 @@ export default function Links() {
       url: '/slack',
       icon: <FaSlack className="w-6 h-6" />,
       description: 'Collaborate on projects and discussions'
-    }
+    },
+    {
+      name: 'X (Twitter)',
+      url: '/x',
+      icon: <FaXTwitter className="w-6 h-6" />,
+      description: 'Follow us for Twitter-Style updates',
+    },
   ];
 
   return (
