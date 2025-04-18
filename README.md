@@ -79,8 +79,8 @@ The club works with a variety of programming languages and technologies, includi
 
 ## Get In Touch
 
-- **Email**: coding.club@newmanu.edu
-- **GitHub**: [https://github.com/newman-coding-club](https://github.com/newman-coding-club)
+- **Email**: newmancodingclub@gmail.com
+- **GitHub**: [https://github.com/newmancodingclub](https://github.com/newmancodingclub)
 - **Discord**: Join our server (link available upon request)
 - **Instagram**: [@newmancodingclub](https://www.instagram.com/newmancodingclub)
 
