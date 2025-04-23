@@ -20,6 +20,11 @@ const videos = [
     id: "o7jqgaooook4",
     title: "You Can't Stop The Beat (Guys)",
     embedUrl: "https://media.cm/e/o7jqgaooook4"
+  },
+  {
+    id: "x48ep6wm5pr9",
+    title: "You can't stop the best (From the back)",
+    embedUrl: "https://media.cm/e/x48ep6wm5pr9"
   }
 ];
 
