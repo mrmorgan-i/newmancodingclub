@@ -30,6 +30,11 @@ const videos = [
     id: "ijh3uimref9k",
     title: "Dancing Queen",
     embedUrl: "https://media.cm/e/ijh3uimref9k"
+  },
+  {
+    id: "n983ppbfn285",
+    title: "Bye Bye Bye",
+    embedUrl: "https://media.cm/e/n983ppbfn285"
   }
 ];
 
