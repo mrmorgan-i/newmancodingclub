@@ -25,6 +25,11 @@ const videos = [
     id: "x48ep6wm5pr9",
     title: "You Can't Stop The Beat (From the back)",
     embedUrl: "https://media.cm/e/x48ep6wm5pr9"
+  },
+  {
+    id: "dea6v31pkwtm",
+    title: "Dancing Queen",
+    embedUrl: "https://media.cm/e/dea6v31pkwtm"
   }
 ];
 
