@@ -27,9 +27,9 @@ const videos = [
     embedUrl: "https://media.cm/e/x48ep6wm5pr9"
   },
   {
-    id: "ijh3uimref9k",
-    title: "Dancing Queen",
-    embedUrl: "https://media.cm/e/ijh3uimref9k"
+    id: "llh271oop8yi",
+    title: "Dancing Queen (New)",
+    embedUrl: "https://media.cm/e/llh271oop8yi"
   },
   {
     id: "n983ppbfn285",
