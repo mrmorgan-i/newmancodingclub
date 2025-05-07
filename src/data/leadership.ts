@@ -27,7 +27,7 @@ export const leaders: ILeader[] = [
         role: "Treasurer",
         bio: "Computer Science major with a passion for robotics.",
         avatar: "/images/leadership/treasurer.jpg",
-        contact: "neilscarberry@gmail.com"
+        contact: "nscarberry010206@gmail.com"
     },
     {
         name: "Thatcher McClure",
