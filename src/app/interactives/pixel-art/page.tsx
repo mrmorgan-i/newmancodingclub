@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
-const GRID_SIZE = 20; // e.g., 20x20 grid
-const PIXEL_SIZE_REM = 1.5; // Each pixel will be 1.5rem x 1.5rem (24px x 24px if 1rem=16px)
-
-const defaultColor = '#FFFFFF'; // White
+const GRID_SIZE = 20;
+const defaultColor = '#FFFFFF';
 
 const colorPalette: string[] = [
   '#000000', // Black
@@ -32,15 +30,9 @@ export default function PixelArtPage() {
   const [grid, setGrid] = useState<string[][]>(() => createInitialGrid(GRID_SIZE, defaultColor));
   const [selectedColor, setSelectedColor] = useState<string>(colorPalette[0]); // Default to black
 
-  // Memoize grid width for performance if GRID_SIZE were dynamic
-  const gridWidthStyle = useMemo(() => ({
-    width: `${GRID_SIZE * PIXEL_SIZE_REM}rem`,
-  }), []);
-
   // Handle clicking on a pixel to change its color
   const handlePixelClick = useCallback((rowIndex: number, colIndex: number) => {
     setGrid(prevGrid => {
-      // Create a new grid to avoid direct state mutation
       const newGrid = prevGrid.map(row => [...row]);
       newGrid[rowIndex][colIndex] = selectedColor;
       return newGrid;
@@ -57,10 +49,9 @@ export default function PixelArtPage() {
     setGrid(createInitialGrid(GRID_SIZE, defaultColor));
   };
   
-
   return (
     <div className="py-8">
-      <div className="max-w-max mx-auto p-6 bg-slate-800 rounded-lg shadow-xl text-slate-100">
+      <div className="w-full max-w-xl mx-auto p-4 sm:p-6 bg-slate-800 rounded-lg shadow-xl text-slate-100">
         <h1 className="text-3xl sm:text-4xl font-bold text-center mb-2 text-sky-400 manrope">
           Pixel Art Creator
         </h1>
@@ -91,17 +82,13 @@ export default function PixelArtPage() {
             >
                 <TrashIcon className="w-5 h-5" /> Clear All
             </button>
-            {/* Placeholder for more controls if needed */}
         </div>
 
-
-        {/* Pixel Grid */}
         <div 
-          className="grid border-2 border-slate-600 shadow-lg mx-auto" 
+          className="grid w-full aspect-square border-2 border-slate-600 shadow-lg mx-auto" 
           style={{ 
             gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-            ...gridWidthStyle, // Apply dynamic width
-            touchAction: 'none' // Improves touch interaction on some devices
+            touchAction: 'none' 
           }}
         >
           {grid.map((row, rowIndex) =>
@@ -110,13 +97,9 @@ export default function PixelArtPage() {
                 key={`${rowIndex}-${colIndex}`}
                 className="border border-slate-700 cursor-pointer hover:opacity-80 transition-opacity"
                 style={{
-                  width: `${PIXEL_SIZE_REM}rem`,
-                  height: `${PIXEL_SIZE_REM}rem`,
                   backgroundColor: pixelColor,
                 }}
                 onClick={() => handlePixelClick(rowIndex, colIndex)}
-                // For mobile: allow "dragging" to paint (optional, more complex)
-                // onTouchMove={(e) => { e.preventDefault(); handlePixelClick(rowIndex, colIndex);}}
               />
             ))
           )}
