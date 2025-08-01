@@ -9,11 +9,11 @@ export const leaders: ILeader[] = [
         contact: "owner@mrimorgan.com"
     },
     {
-        name: "Vince Wong",
+        name: "Thatcher McClure",
         role: "Vice President",
-        bio: "Computer Science major with an interest in game dev.",
+        bio: "Computer Science major with experience in game dev. Super Nerd",
         avatar: "/images/leadership/vp.jpg",
-        contact: "vincekyewong@gmail.com"
+        contact: "thatchermcclure@gmail.com"
     },
     {
         name: "Ariana Sweitzer",
@@ -30,10 +30,10 @@ export const leaders: ILeader[] = [
         contact: "nscarberry010206@gmail.com"
     },
     {
-        name: "Thatcher McClure",
+        name: "Gabe Gorcos",
         role: "Events Coordinator",
-        bio: "Computer Science major. Super Nerd. Game dev.",
+        bio: "Biology major eager to leverage coding skills to streamline processes and improve efficiency.",
         avatar: "/images/leadership/events.jpg",
-        contact: "thatchermcclure@gmail.com"
+        contact: "gorcos658018@newmanu.com"
     }
 ];
