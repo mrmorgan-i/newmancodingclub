@@ -77,4 +77,10 @@ export interface IEvent {
     description: string;
     tags: string[];
     registerLink: string;
+    isRecurring?: boolean;
+    recurrencePattern?: 'weekly' | 'biweekly' | 'monthly';
+    dayOfWeek?: number; // 0 = Sunday
+    startDate?: string;
+    endDate?: string;
+    isActive?: boolean;
 }
