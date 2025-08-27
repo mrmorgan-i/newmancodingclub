@@ -17,8 +17,8 @@ export const events: IEvent[] = [
     },
     {
         title: "Create your Website Workshop",
-        date: "2025-09-05",
-        time: "12:00 PM - 1:00 PM",
+        date: "2025-09-09",
+        time: "7:00 PM - 8:00 PM",
         location: "BSGC 104",
         description: "Learn how to create a website using Next.js.",
         tags: ["Next.js", "Beginner", "Programming"],
