@@ -23,11 +23,11 @@ export const leaders: ILeader[] = [
         contact: "sweitzer602155@newmanu.edu"
     },
     {
-        name: "Neil Scarberry",
+        name: "David Michaud",
         role: "Treasurer",
-        bio: "Computer Science major with a passion for robotics.",
+        bio: "Computer Science major with a passion for AI and machine learning.",
         avatar: "/images/leadership/treasurer.jpg",
-        contact: "nscarberry010206@gmail.com"
+        contact: "michaud671468@newmanu.edu"
     },
     {
         name: "Gabe Gorcos",
