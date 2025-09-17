@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface IMenuItem {
     text: string;
     url: string;
@@ -43,7 +45,7 @@ export interface IAdvisor {
 export interface IBenefitBullet {
     title: string;
     description: string;
-    icon: JSX.Element;
+    icon: React.ReactElement;
 }
 
 export interface IFAQ {
@@ -53,7 +55,7 @@ export interface IFAQ {
 
 export interface IStats {
     title: string;
-    icon: JSX.Element;
+    icon: React.ReactElement;
     description: string;
 }
 

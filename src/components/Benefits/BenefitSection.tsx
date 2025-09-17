@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image";
 import clsx from "clsx";
-import { motion, Variants } from "framer-motion"
 
 import BenefitBullet from "./BenefitBullet";
 import SectionTitle from "../SectionTitle";
@@ -12,61 +11,18 @@ interface Props {
     imageAtRight?: boolean;
 }
 
-const containerVariants: Variants = {
-    offscreen: {
-        opacity: 0,
-        y: 100
-    },
-    onscreen: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            type: "spring",
-            bounce: 0.2,
-            duration: 0.9,
-            delayChildren: 0.2,
-            staggerChildren: 0.1,
-        }
-    }
-};
-
-export const childVariants = {
-    offscreen: {
-        opacity: 0,
-        x: -50,
-    },
-    onscreen: {
-        opacity: 1,
-        x: 0,
-        transition: {
-            type: "spring",
-            bounce: 0.2,
-            duration: 1,
-        }
-    },
-};
-
 const BenefitSection: React.FC<Props> = ({ benefit, imageAtRight }: Props) => {
     const { title, description, imageSrc, bullets } = benefit;
 
     return (
         <section className="benefit-section">
-            <motion.div
-                className="flex flex-wrap flex-col items-center justify-center gap-2 lg:flex-row lg:gap-20 lg:flex-nowrap mb-24"
-                variants={containerVariants}
-                initial="offscreen"
-                whileInView="onscreen"
-                viewport={{ once: true }}
-            >
+            <div className="flex flex-wrap flex-col items-center justify-center gap-2 lg:flex-row lg:gap-20 lg:flex-nowrap mb-24 animate-fade-in-up">
                 <div
                     className={clsx("flex flex-wrap items-center w-full max-w-lg", { "justify-start": imageAtRight, "lg:order-1 justify-end": !imageAtRight })}
                     
                 >
                     <div className="w-full text-center lg:text-left">
-                        <motion.div
-                            className="flex flex-col w-full"
-                            variants={childVariants}
-                        >
+                        <div className="flex flex-col w-full animate-slide-in-left">
                             <SectionTitle>
                                 <h3 className="lg:max-w-2xl">
                                     {title}
@@ -76,11 +32,13 @@ const BenefitSection: React.FC<Props> = ({ benefit, imageAtRight }: Props) => {
                             <p className="mt-1.5 mx-auto lg:ml-0 leading-normal text-foreground-accent">
                                 {description}
                             </p>
-                        </motion.div>
+                        </div>
 
                         <div className="mx-auto lg:ml-0 w-full">
                             {bullets.map((item, index) => (
-                                <BenefitBullet key={index} title={item.title} icon={item.icon} description={item.description} />
+                                <div key={index} style={{ '--animation-delay': `${200 + index * 100}ms` } as React.CSSProperties}>
+                                    <BenefitBullet title={item.title} icon={item.icon} description={item.description} />
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -103,7 +61,7 @@ const BenefitSection: React.FC<Props> = ({ benefit, imageAtRight }: Props) => {
                         />
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </section>
     );
 }
