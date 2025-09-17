@@ -16,19 +16,19 @@ export const events: IEvent[] = [
         isActive: true
     },
     {
-        title: "Create your Website Workshop",
-        date: "2025-09-09",
-        time: "7:00 PM - 8:00 PM",
+        title: "Honors-Coding Club Crossover",
+        date: "2025-11-20",
+        time: "5:00 PM - 7:00 PM",
         location: "BSGC 104",
-        description: "Learn how to create a website using Next.js.",
-        tags: ["Next.js", "Beginner", "Programming"],
-        registerLink: "https://forms.office.com/r/zwj8xY3Pfd",
+        description: "Learn how to leverage the latest AI technologies.",
+        tags: ["AI", "Prompting", "Hacks"],
+        registerLink: "#",
         isRecurring: false,
         isActive: true
     },
     {
         title: "Guest Speaker Appearance",
-        date: "2025-09-23",
+        date: "TBD",
         time: "12:00 PM - 1:00 PM",
         location: "BSGC 104",
         description: "Join us for a guest speaker appearance!",
