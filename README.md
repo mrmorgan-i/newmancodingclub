@@ -56,14 +56,15 @@ We organize various activities throughout the academic year:
 Our Executive Board for the 2024-2025 academic year:
 
 - **President**: Kelly Lotsu-Morgan
-- **Vice President**: Vince Wong
+- **Vice President**: Thatcher McClure
 - **Secretary**: Ariana Sweitzer
-- **Treasurer**: Neil Scarberry
-- **Events Coordinator**: Thatcher McClure
+- **Treasurer**: David Machaud
+- **Events Coordinator**: Gabe Gorcos
 
 ## Faculty Advisor
 
 - **Dr. Robert Norman**
+- **Dr. David Cochran**
 
 ## Technology Focus
 
