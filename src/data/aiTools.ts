@@ -101,6 +101,14 @@ export const aiFields: FieldTools[] = [
         examplePrompt: 'How do I implement OAuth in Next.js?',
         useCase: 'Debugging and comparing implementation patterns.',
       },
+      {
+        name: 'Claude Code',
+        description: 'Powerful CLI tool for terminal-based development.',
+        link: 'https://claude.ai/code',
+        access: 'FREEMIUM',
+        examplePrompt: 'Create a simple web server in Node.js.',
+        useCase: 'Terminal-based development and debugging.',
+      },
     ],
   },
   {
