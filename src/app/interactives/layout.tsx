@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import Container from '@/components/Container';
 
 export default function InteractivesLayout({
   children,
@@ -14,21 +15,24 @@ export default function InteractivesLayout({
 
   const showBackLink = pathname !== '/interactives';
 
+  if (!showBackLink) {
+    return <div className="bg-slate-950 text-slate-100">{children}</div>;
+  }
+
   return (
-    <div className="pt-16 md:pt-24">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {showBackLink && (
-          <div className="mb-6 sm:mb-2">
-            <Link href="/interactives" legacyBehavior>
-              <a className="inline-flex items-center text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors duration-150 ease-in-out group">
-                <ArrowLeftIcon className="w-5 h-4 mr-2 transition-transform duration-150 ease-in-out group-hover:-translate-x-1" />
-                Back to All Interactives
-              </a>
-            </Link>
-          </div>
-        )}
+    <div className="bg-slate-950 text-slate-100">
+      <Container className="pt-28 pb-16">
+        <div className="mb-8">
+          <Link
+            href="/interactives"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-primary hover:text-primary"
+          >
+            <ArrowLeftIcon className="h-4 w-4" />
+            Back to interactives hub
+          </Link>
+        </div>
         {children}
-      </div>
+      </Container>
     </div>
   );
 }

@@ -1,28 +1,26 @@
-"use client"; 
+"use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { SpeakerWaveIcon, PlayCircleIcon, PauseCircleIcon } from '@heroicons/react/24/outline';
 
-// Define the structure for a drum
 interface DrumItem {
   key: string;
-  sound: string; // Filename without extension (e.g., 'tom-1')
+  sound: string;
   label: string;
   color: string;
   activeColor?: string;
 }
 
-// Define the drum set
 const drums: DrumItem[] = [
-  { key: 'w', sound: 'tom-1', label: 'Tom 1', color: 'bg-red-500', activeColor: 'border-red-300' },
-  { key: 'a', sound: 'tom-2', label: 'Tom 2', color: 'bg-blue-500', activeColor: 'border-blue-300' },
-  { key: 's', sound: 'tom-3', label: 'Tom 3', color: 'bg-green-500', activeColor: 'border-green-300' },
-  { key: 'd', sound: 'tom-4', label: 'Tom 4', color: 'bg-yellow-500', activeColor: 'border-yellow-300' },
-  { key: 'j', sound: 'snare', label: 'Snare', color: 'bg-purple-500', activeColor: 'border-purple-300' },
-  { key: 'k', sound: 'crash', label: 'Crash', color: 'bg-pink-500', activeColor: 'border-pink-300' },
-  { key: 'l', sound: 'kick-bass', label: 'Kick', color: 'bg-indigo-500', activeColor: 'border-indigo-300' },
+  { key: 'w', sound: 'tom-1', label: 'Tom 1', color: 'bg-red-500', activeColor: 'border-red-200' },
+  { key: 'a', sound: 'tom-2', label: 'Tom 2', color: 'bg-blue-500', activeColor: 'border-blue-200' },
+  { key: 's', sound: 'tom-3', label: 'Tom 3', color: 'bg-green-500', activeColor: 'border-green-200' },
+  { key: 'd', sound: 'tom-4', label: 'Tom 4', color: 'bg-yellow-500', activeColor: 'border-yellow-200' },
+  { key: 'j', sound: 'snare', label: 'Snare', color: 'bg-purple-500', activeColor: 'border-purple-200' },
+  { key: 'k', sound: 'crash', label: 'Crash', color: 'bg-pink-500', activeColor: 'border-pink-200' },
+  { key: 'l', sound: 'kick-bass', label: 'Kick', color: 'bg-indigo-500', activeColor: 'border-indigo-200' },
 ];
 
-// Define the structure for a recorded beat
 interface Beat {
   key: string;
   timestamp: number;
@@ -34,164 +32,221 @@ export default function DrumKitPage() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null);
   const [playbackActive, setPlaybackActive] = useState<boolean>(false);
+  const [bpm, setBpm] = useState(110);
+  const [metronomeOn, setMetronomeOn] = useState(false);
+  const [metronomePulse, setMetronomePulse] = useState(0);
 
-  // Memoized playSound function
   const playSound = useCallback((key: string) => {
-    const drum = drums.find(d => d.key === key);
+    const drum = drums.find((item) => item.key === key);
     if (!drum) return;
-    
-    // Visual feedback for the pressed key
-    setActiveKey(key);
-    setTimeout(() => setActiveKey(null), 200); // Shorter timeout for snappier feel
-    
-    try {
-      const audio = new Audio(`/sounds/${drum.sound}.mp3`);
-      audio.play().catch(error => console.error(`Error playing sound ${drum.sound}:`, error));
-    } catch (error) {
-        console.error("Error creating audio element:", error);
-    }
-    
-    // If currently recording, add this beat to the recording
-    if (isRecording && recordingStartTime) {
-      const now = Date.now();
-      const timestamp = now - recordingStartTime;
-      setBeatRecording(prev => [...prev, { key, timestamp }]);
-    }
-  }, [isRecording, recordingStartTime]); // Dependencies for playSound
 
-  // Handle keyboard events for playing drums
+    setActiveKey(key);
+    setTimeout(() => setActiveKey(null), 180);
+
+    const audio = new Audio(`/sounds/${drum.sound}.mp3`);
+    audio.play().catch(() => {});
+
+    if (isRecording && recordingStartTime) {
+      const timestamp = Date.now() - recordingStartTime;
+      setBeatRecording((prev) => [...prev, { key, timestamp }]);
+    }
+  }, [isRecording, recordingStartTime]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Prevent playing sound if a modifier key is pressed (e.g. for browser shortcuts)
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-
-      const drum = drums.find(d => d.key === event.key.toLowerCase());
+      const drum = drums.find((item) => item.key === event.key.toLowerCase());
       if (drum) {
-        event.preventDefault(); // Prevent default browser action for the key (e.g. scrolling)
+        event.preventDefault();
         playSound(drum.key);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    // Cleanup function to remove event listener
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [playSound]);
 
-  // Function to start recording a beat
+  useEffect(() => {
+    if (!metronomeOn || playbackActive) return;
+    const interval = setInterval(() => setMetronomePulse((prev) => prev + 1), (60_000 / bpm));
+    return () => clearInterval(interval);
+  }, [metronomeOn, bpm, playbackActive]);
+
   const startRecording = () => {
-    setBeatRecording([]); // Clear previous recording
+    setBeatRecording([]);
     setIsRecording(true);
-    setPlaybackActive(false); // Ensure playback is stopped
+    setPlaybackActive(false);
     setRecordingStartTime(Date.now());
   };
 
-  // Function to stop recording
   const stopRecording = () => {
     setIsRecording(false);
   };
 
-  // Function to play back the recorded beat
   const playRecording = () => {
     if (beatRecording.length === 0 || playbackActive || isRecording) return;
-    
     setPlaybackActive(true);
-    
+    const tempoRatio = 110 / bpm;
+
     beatRecording.forEach((beat, index) => {
       setTimeout(() => {
         playSound(beat.key);
-        
-        // If this is the last beat, set playback as inactive after it plays
         if (index === beatRecording.length - 1) {
-          // Add a slight delay after the last sound to ensure it finishes
-          setTimeout(() => setPlaybackActive(false), 300); 
+          setTimeout(() => setPlaybackActive(false), 250);
         }
-      }, beat.timestamp);
+      }, beat.timestamp * tempoRatio);
     });
   };
 
+  const stopPlayback = () => {
+    setPlaybackActive(false);
+  };
+
   return (
-    <div className="py-8"> {/* Overall padding for the page content */}
-      <div className="max-w-4xl mx-auto p-6 bg-slate-800 rounded-lg shadow-xl text-slate-100">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-sky-400 manrope">
-          Interactive Web Drum Kit
-        </h1>
-        
-        {/* Drum Pads Grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3 sm:gap-4 mb-10">
-          {drums.map((drum) => (
-            <button
-              key={drum.key}
-              className={`w-full aspect-square rounded-lg border-4 shadow-lg flex flex-col items-center justify-center text-white font-bold text-2xl sm:text-3xl transition-all transform focus:outline-none
-                ${drum.color} 
-                ${activeKey === drum.key 
-                  ? `scale-95 opacity-90 ${drum.activeColor || 'border-white'} ring-4 ${drum.activeColor || 'ring-white'}` 
-                  : `${drum.color} border-slate-700 hover:scale-105 hover:border-slate-500 focus:border-sky-400 focus:ring-2 focus:ring-sky-400`
-                }`}
-              onClick={() => playSound(drum.key)}
-              aria-label={`Play ${drum.label} (key ${drum.key.toUpperCase()})`}
-            >
-              <span className="mb-1 sm:mb-2 text-xl sm:text-2xl">{drum.key.toUpperCase()}</span>
-              <span className="text-xs sm:text-sm font-normal">{drum.label}</span>
-            </button>
-          ))}
-        </div>
-        
-        {/* Beat Recorder Controls */}
-        <div className="bg-slate-700 p-4 sm:p-6 rounded-lg shadow-inner">
-          <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-sky-300">Beat Recorder</h2>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 sm:gap-4">
-            <button
-              onClick={startRecording}
-              disabled={isRecording}
-              className={`px-6 py-3 rounded-md font-semibold text-base transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75
-                ${isRecording 
-                  ? 'bg-slate-500 text-slate-300 cursor-not-allowed' 
-                  : 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500'
-                }`}
-            >
-              {isRecording ? 'Recording...' : 'Start Recording'}
-            </button>
-            
-            <button
-              onClick={stopRecording}
-              disabled={!isRecording}
-              className={`px-6 py-3 rounded-md font-semibold text-base transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75
-                ${!isRecording 
-                  ? 'bg-slate-500 text-slate-300 cursor-not-allowed' 
-                  : 'bg-slate-600 hover:bg-slate-500 text-white focus:ring-slate-400'
-                }`}
-            >
-              Stop Recording
-            </button>
-            
-            <button
-              onClick={playRecording}
-              disabled={beatRecording.length === 0 || playbackActive || isRecording}
-              className={`px-6 py-3 rounded-md font-semibold text-base transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75
-                ${(beatRecording.length === 0 || playbackActive || isRecording)
-                  ? 'bg-slate-500 text-slate-300 cursor-not-allowed' 
-                  : 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
-                }`}
-            >
-              {playbackActive ? 'Playing...' : 'Play Recording'}
-            </button>
-          </div>
-          
-          <div className="mt-4 sm:mt-6 text-center text-slate-400">
-            <p>{beatRecording.length} beat{beatRecording.length !== 1 ? 's' : ''} recorded</p>
+    <section className="pb-16">
+      <div className="space-y-8">
+        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+          <p className="text-sm font-semibold uppercase tracking-wide text-pink-200">Live coding jam</p>
+          <h1 className="mt-2 text-4xl font-bold manrope text-white">Interactive Web Drum Kit</h1>
+          <p className="mt-3 max-w-3xl text-lg text-slate-300">
+            Trigger pads with your keyboard (WASD + JKL) or tap them on touch screens. Record loops, tweak the BPM, and use the metronome to stay in sync.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: 'Pads', value: drums.length },
+              { label: 'BPM', value: bpm },
+              { label: 'Recorded hits', value: beatRecording.length },
+              { label: 'Metronome', value: metronomeOn ? 'On' : 'Off' },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-300">{stat.label}</p>
+                <p className="text-2xl font-semibold text-white">{stat.value}</p>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <div className="mt-8 text-center text-slate-400 text-sm">
-          <p>Press the buttons or use your keyboard (W, A, S, D, J, K, L) to play drums!</p>
-          <p>Made with ❤️ by the Newman Coding Club</p>
+
+        <div className="rounded-3xl bg-white p-6 shadow-2xl shadow-slate-200/60">
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+              {drums.map((drum) => (
+                <button
+                  key={drum.key}
+                  onClick={() => playSound(drum.key)}
+                  className={`aspect-square rounded-2xl border-4 text-white transition ${
+                    activeKey === drum.key
+                      ? `${drum.color} ${drum.activeColor} scale-95`
+                      : `${drum.color} border-transparent hover:scale-105`
+                  }`}
+                  aria-label={`Play ${drum.label}`}
+                >
+                  <span className="block text-2xl font-bold">{drum.key.toUpperCase()}</span>
+                  <span className="text-sm font-medium">{drum.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600">Recorder</p>
+                    <p className="text-xs text-slate-500">Capture keyboard hits in real time.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={startRecording}
+                      disabled={isRecording}
+                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        isRecording ? 'bg-slate-200 text-slate-500' : 'bg-rose-500 text-white hover:bg-rose-600'
+                      }`}
+                    >
+                      {isRecording ? 'Recording…' : 'Start'}
+                    </button>
+                    <button
+                      onClick={stopRecording}
+                      disabled={!isRecording}
+                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        isRecording ? 'bg-slate-800 text-white' : 'bg-slate-200 text-slate-500'
+                      }`}
+                    >
+                      Stop
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={playRecording}
+                    disabled={beatRecording.length === 0 || playbackActive}
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                      beatRecording.length === 0 || playbackActive
+                        ? 'bg-slate-200 text-slate-500'
+                        : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                    }`}
+                  >
+                    <PlayCircleIcon className="h-5 w-5" />
+                    Play loop
+                  </button>
+                  <button
+                    onClick={stopPlayback}
+                    disabled={!playbackActive}
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                      playbackActive ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500'
+                    }`}
+                  >
+                    <PauseCircleIcon className="h-5 w-5" />
+                    Stop
+                  </button>
+                  <p className="text-xs text-slate-500">{beatRecording.length} beat{beatRecording.length === 1 ? '' : 's'} captured</p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-slate-600">Tempo + Metronome</p>
+                  <button
+                    onClick={() => setMetronomeOn((prev) => !prev)}
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition ${
+                      metronomeOn ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    <SpeakerWaveIcon className="h-4 w-4" />
+                    {metronomeOn ? 'Metronome on' : 'Metronome off'}
+                  </button>
+                </div>
+                <div className="mt-4 flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={80}
+                    max={160}
+                    value={bpm}
+                    onChange={(event) => setBpm(Number(event.target.value))}
+                    className="w-full"
+                  />
+                  <span className="w-12 text-right text-sm font-semibold text-slate-700">{bpm} BPM</span>
+                </div>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="h-3 flex-1 rounded-full bg-slate-200">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 transition-all"
+                      style={{ width: `${((bpm - 80) / 80) * 100}%` }}
+                    />
+                  </div>
+                  {metronomeOn && (
+                    <span
+                      className={`h-4 w-4 rounded-full ${metronomePulse % 2 === 0 ? 'bg-sky-500' : 'bg-emerald-500'} transition`}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-slate-500">
+              Tip: Layer multiple passes by recording, playing back, and improvising on top of the loop.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

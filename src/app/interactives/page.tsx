@@ -8,6 +8,7 @@ import {
   ChevronRightIcon,
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
+import Container from '@/components/Container';
 
 // Define the structure for an interactive activity
 interface InteractiveActivity {
@@ -19,6 +20,9 @@ interface InteractiveActivity {
   bgColor: string;
   iconColor: string;
   tags: string[];
+  difficulty: 'Beginner' | 'All Levels' | 'Intermediate';
+  duration: string;
+  status?: 'New' | 'Updated';
 }
 
 // Array of interactive activities
@@ -32,6 +36,9 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-pink-500',
     iconColor: 'text-pink-100',
     tags: ['Music', 'JavaScript', 'Audio API', 'Fun'],
+    difficulty: 'All Levels',
+    duration: '3-10 min',
+    status: 'Updated',
   },
   {
     id: 'mad-libs',
@@ -42,6 +49,8 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-indigo-500',
     iconColor: 'text-indigo-100',
     tags: ['Language', 'Creativity', 'Beginner-Friendly'],
+    difficulty: 'Beginner',
+    duration: '2 min',
   },
   {
     id: 'color-matcher',
@@ -52,6 +61,9 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-purple-500',
     iconColor: 'text-purple-100',
     tags: ['Game', 'Memory', 'Challenge', 'All Levels'],
+    difficulty: 'All Levels',
+    duration: '5 min',
+    status: 'New',
   },
   {
     id: 'http-errors',
@@ -62,6 +74,8 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-rose-500',
     iconColor: 'text-rose-100',
     tags: ['Game', 'Memory', 'Learning', 'All Levels'],
+    difficulty: 'Intermediate',
+    duration: '6 min',
   },
   {
     id: 'pixel-art',
@@ -72,6 +86,8 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-emerald-500',
     iconColor: 'text-emerald-100',
     tags: ['Art', 'Collaboration', 'Real-time', 'Visual'],
+    difficulty: 'All Levels',
+    duration: 'open ended',
   },
   {
     id: 'code-quiz',
@@ -82,71 +98,163 @@ const activities: InteractiveActivity[] = [
     bgColor: 'bg-sky-500',
     iconColor: 'text-sky-100',
     tags: ['Quiz', 'Learning', 'Challenge', 'All Levels'],
+    difficulty: 'All Levels',
+    duration: '8 min',
   },
 ];
 
 export default function InteractivesPage() {
+  const skillPathways = [
+    {
+      label: 'Quick wins',
+      description: 'Fast icebreakers for meetings or study sessions.',
+      items: ['mad-libs', 'color-matcher'],
+    },
+    {
+      label: 'Level up',
+      description: 'Keep your brain moving with short challenges.',
+      items: ['http-errors', 'code-quiz'],
+    },
+    {
+      label: 'Creative labs',
+      description: 'Hands-on spaces to jam and build visuals.',
+      items: ['drum-kit', 'pixel-art'],
+    },
+  ];
+
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-100 px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-      <div className="max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold manrope mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-500">
-              Interactive Activities
-            </span>
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto">
-            Explore fun and engaging coding activities built by and for the Newman Coding Club. Click on an activity to try it out!
-          </p>
-        </div>
+    <div className="bg-slate-950 text-slate-100">
+      <section className="relative isolate overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.25),_transparent_50%)]" />
+        <Container className="relative z-10 py-20 lg:py-28">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-300">
+              Newman Coding Club Interactives
+            </p>
+            <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold manrope leading-tight">
+              Hands-on interactives built by students, for students.
+            </h1>
+            <p className="mt-4 text-lg text-slate-300">
+              Learn a concept, test your reflexes, or make art in under ten minutes. Every interactive runs in the browser and works great on touch devices.
+            </p>
+          </div>
 
-        {/* Grid of Activity Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {activities.map((activity) => (
-            <Link href={activity.href} key={activity.id} legacyBehavior>
-              <a className={`group block p-6 rounded-xl shadow-2xl transition-all duration-300 ease-in-out hover:shadow-sky-500/30 ${activity.href === '#' ? 'bg-slate-800 cursor-not-allowed opacity-70' : 'bg-slate-800 hover:bg-slate-700 focus:ring-4 focus:ring-sky-500 focus:ring-opacity-50'}`}>
-                <div className="flex items-start space-x-4">
-                  <div className={`flex-shrink-0 p-3 rounded-lg ${activity.bgColor} ${activity.href === '#' ? 'opacity-60' : ''}`}>
-                    <activity.icon className={`w-7 h-7 ${activity.iconColor}`} aria-hidden="true" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold manrope text-sky-300 group-hover:text-sky-200 mb-1">
-                      {activity.title}
-                    </h3>
-                    <p className="text-slate-400 group-hover:text-slate-300 text-sm mb-3">
-                      {activity.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {activity.tags.map(tag => (
-                        <span key={tag} className={`px-2 py-0.5 text-xs rounded-full font-medium ${activity.href === '#' ? 'bg-slate-700 text-slate-400' : 'bg-sky-700 text-sky-200 group-hover:bg-sky-600'}`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  {activity.href !== '#' && (
-                    <ChevronRightIcon className="w-6 h-6 text-slate-500 group-hover:text-sky-400 transition-transform duration-300 group-hover:translate-x-1 self-center" />
-                  )}
-                </div>
-                {activity.href === '#' && (
-                   <p className="text-xs text-amber-400 mt-3 text-right font-semibold">Coming Soon!</p>
-                )}
-              </a>
-            </Link>
-          ))}
-        </div>
-
-        {/* Back to Home Link */}
-        <div className="mt-16 text-center">
-          <Link href="/" legacyBehavior>
-            <a className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-sky-100 bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 transition-colors">
-              <ArrowLeftIcon className="w-5 h-5 mr-2" />
-              Back to Home
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a
+              href="#interactive-grid"
+              className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-accent"
+            >
+              Start playing
             </a>
-          </Link>
-        </div>
-      </div>
-    </main>
+            <a
+              href="mailto:newmancodingclub@gmail.com?subject=Interactive%20idea"
+              className="inline-flex items-center rounded-full border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-100 transition hover:border-primary hover:text-primary"
+            >
+              Suggest an idea
+            </a>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
+            {[
+              { label: 'Interactives live', value: activities.length },
+              { label: 'Avg. play time', value: '~6 min' },
+              { label: 'Built by', value: 'Club members' },
+              { label: 'Modes covered', value: 'Games · Creativity · Quiz' },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 text-center shadow-inner shadow-slate-900/40"
+              >
+                <p className="text-3xl font-bold">{stat.value}</p>
+                <p className="mt-1 text-xs uppercase tracking-wide text-slate-400 text-balance">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <section id="interactive-grid" className="relative z-10 -mt-6 pb-16">
+        <Container>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {skillPathways.map((pathway) => (
+              <div key={pathway.label} className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg shadow-slate-900/30">
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-400">{pathway.label}</p>
+                <h3 className="mt-2 text-2xl font-semibold text-white">{pathway.description}</h3>
+                <div className="mt-4 space-y-4">
+                  {pathway.items.map((id) => {
+                    const activity = activities.find((item) => item.id === id);
+                    if (!activity) return null;
+                    return (
+                      <Link
+                        href={activity.href}
+                        key={activity.id}
+                        className="group flex items-start gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 transition hover:-translate-y-0.5 hover:border-primary/60"
+                      >
+                        <div className={`rounded-xl p-2 ${activity.bgColor}`}>
+                          <activity.icon className={`h-5 w-5 ${activity.iconColor}`} />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-white group-hover:text-primary">{activity.title}</p>
+                          <p className="text-sm text-slate-400">{activity.difficulty} • {activity.duration}</p>
+                        </div>
+                        <ChevronRightIcon className="h-5 w-5 text-slate-600 group-hover:text-primary" />
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            {activities.map((activity) => (
+              <Link
+                href={activity.href}
+                key={activity.id}
+                className="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg shadow-slate-900/30 transition hover:-translate-y-1 hover:border-primary/60"
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`rounded-xl p-3 ${activity.bgColor}`}>
+                    <activity.icon className={`h-6 w-6 ${activity.iconColor}`} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold text-white group-hover:text-primary">{activity.title}</h3>
+                      {activity.status && (
+                        <span className="text-xs font-semibold uppercase tracking-wide text-sky-300">
+                          {activity.status}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-2 text-sm text-slate-400">{activity.description}</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {activity.tags.map((tag) => (
+                    <span key={tag} className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-4 flex items-center justify-between text-xs uppercase tracking-wide text-slate-400">
+                  <span>{activity.difficulty}</span>
+                  <span>{activity.duration}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-100 hover:border-primary hover:text-primary"
+            >
+              <ArrowLeftIcon className="mr-2 h-5 w-5" />
+              Back to the main site
+            </Link>
+          </div>
+        </Container>
+      </section>
+    </div>
   );
 }
