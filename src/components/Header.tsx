@@ -17,11 +17,11 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="bg-transparent fixed top-0 left-0 right-0 md:absolute z-50 mx-auto w-full">
+        <header className="supports-[backdrop-filter]:bg-white/80 bg-white/95 backdrop-blur fixed top-0 left-0 right-0 z-50 w-full shadow-md">
             <Container className="!px-0">
-                <nav className="shadow-md md:shadow-none bg-white md:bg-transparent mx-auto flex justify-between items-center py-2 px-5 md:py-10">
+                <nav className="mx-auto flex justify-between items-center py-2 px-5 md:py-6">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-3">
                         <Image 
                             src="/images/logo.svg"
                             alt="Newman Coding Club Logo" 
@@ -29,13 +29,13 @@ const Header: React.FC = () => {
                             height={28} 
                             className="min-w-fit w-7 h-7" 
                         />
-                        <span className="manrope text-xl font-semibold text-foreground cursor-pointer">
+                        <span className="manrope text-sm md:text-xl font-semibold text-foreground cursor-pointer whitespace-nowrap">
                             {siteDetails.siteName}
                         </span>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <ul className="hidden md:flex space-x-6">
+                    <ul className="hidden lg:flex space-x-6">
                     {menuItems.map(item => (
                         <li key={item.text}>
                             <Link 
@@ -54,7 +54,7 @@ const Header: React.FC = () => {
                     </ul>
 
                     {/* Mobile Menu Button */}
-                    <div className="md:hidden flex items-center">
+                    <div className="lg:hidden flex items-center">
                         <button
                             onClick={toggleMenu}
                             type="button"
@@ -83,7 +83,7 @@ const Header: React.FC = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
             >
-                <div id="mobile-menu" className="md:hidden bg-white shadow-lg">
+                <div id="mobile-menu" className="lg:hidden bg-white shadow-lg">
                     <ul className="flex flex-col space-y-4 pt-1 pb-6 px-6">
                     {menuItems.map(item => (
                         <li key={item.text}>
