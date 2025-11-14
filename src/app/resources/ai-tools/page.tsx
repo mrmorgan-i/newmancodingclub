@@ -27,7 +27,7 @@ export default function AIToolsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedTool, setCopiedTool] = useState<string | null>(null);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shareTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
