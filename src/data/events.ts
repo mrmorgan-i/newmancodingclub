@@ -16,13 +16,13 @@ export const events: IEvent[] = [
         isActive: true
     },
     {
-        title: "Honors-Coding Club Crossover",
+        title: "Honors x Coding Club Crossover",
         date: "2025-11-20",
-        time: "5:00 PM - 7:00 PM",
-        location: "BSGC 104",
+        time: "5:00 PM - 6:30 PM",
+        location: "Library CTL",
         description: "Learn how to leverage the latest AI technologies.",
         tags: ["AI", "Prompting", "Hacks"],
-        registerLink: "#",
+        registerLink: "https://forms.office.com/r/F0Xmpnav3A",
         isRecurring: false,
         isActive: true
     },

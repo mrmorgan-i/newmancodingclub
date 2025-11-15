@@ -24,7 +24,7 @@ const Leadership: React.FC = () => {
       </div>
 
       <h3 className="text-2xl font-semibold mb-8 text-center">
-        Faculty Advisor
+        Faculty Advisors
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto">
         {advisor.map((advisor) => (
