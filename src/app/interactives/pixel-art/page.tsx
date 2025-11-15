@@ -1,7 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { TrashIcon, ArrowDownTrayIcon, CursorArrowRaysIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowDownTrayIcon, CursorArrowRaysIcon, DocumentDuplicateIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useSession } from '@/lib/auth/client';
+import PixelArtNav from '@/components/PixelArtNav';
 
 const defaultColor = '#FFFFFF';
 const palettes = [
@@ -23,10 +26,27 @@ const gridPresets = [
   { id: 20, label: '20×20 (detailed)' },
 ];
 
+const DRAFT_STORAGE_KEY = 'pixel-art:draft';
+const REDIRECT_KEY = 'auth:redirect';
+
+type PixelArtDraft = {
+  rows: number;
+  cols: number;
+  grid: string[][];
+  title?: string;
+  description?: string;
+  isPublic?: boolean;
+};
+
 const createInitialGrid = (rows: number, cols?: number): string[][] =>
   Array.from({ length: rows }, () => Array.from({ length: cols ?? rows }, () => defaultColor));
 
 export default function PixelArtPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const currentUser = session?.user ?? null;
+  const isAuthenticated = Boolean(currentUser);
+
   const [rows, setRows] = useState(gridPresets[1].id);
   const [cols, setCols] = useState(gridPresets[1].id);
   const [grid, setGrid] = useState<string[][]>(() => createInitialGrid(rows, cols));
@@ -36,7 +56,21 @@ export default function PixelArtPage() {
   const [customColsInput, setCustomColsInput] = useState('');
   const [customError, setCustomError] = useState<string | null>(null);
 
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [titleInput, setTitleInput] = useState('');
+  const [descriptionInput, setDescriptionInput] = useState('');
+  const [isPublicInput, setIsPublicInput] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const skipNextResetRef = useRef(false);
+  const hasRestoredDraftRef = useRef(false);
+
   useEffect(() => {
+    if (skipNextResetRef.current) {
+      skipNextResetRef.current = false;
+      return;
+    }
     setGrid(createInitialGrid(rows, cols));
   }, [rows, cols]);
 
@@ -50,13 +84,16 @@ export default function PixelArtPage() {
     };
   }, []);
 
-  const paintPixel = useCallback((rowIndex: number, colIndex: number) => {
-    setGrid((prev) => {
-      const next = prev.map((row) => [...row]);
-      next[rowIndex][colIndex] = selectedColor;
-      return next;
-    });
-  }, [selectedColor]);
+  const paintPixel = useCallback(
+    (rowIndex: number, colIndex: number) => {
+      setGrid((prev) => {
+        const next = prev.map((row) => [...row]);
+        next[rowIndex][colIndex] = selectedColor;
+        return next;
+      });
+    },
+    [selectedColor],
+  );
 
   const handlePointerDown = (rowIndex: number, colIndex: number) => {
     setIsDrawing(true);
@@ -72,6 +109,55 @@ export default function PixelArtPage() {
     setGrid(createInitialGrid(rows, cols));
   };
 
+  const persistDraft = useCallback(
+    (overrides?: Partial<PixelArtDraft>) => {
+      if (typeof window === 'undefined') return;
+      const payload: PixelArtDraft = {
+        rows,
+        cols,
+        grid,
+        title: titleInput,
+        description: descriptionInput,
+        isPublic: isPublicInput,
+        ...overrides,
+      };
+      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
+    },
+    [rows, cols, grid, titleInput, descriptionInput, isPublicInput],
+  );
+
+  const restoreDraft = useCallback((draft: PixelArtDraft) => {
+    skipNextResetRef.current = true;
+    setRows(draft.rows);
+    setCols(draft.cols);
+    setGrid(draft.grid);
+    setTitleInput(draft.title ?? '');
+    setDescriptionInput(draft.description ?? '');
+    setIsPublicInput(draft.isPublic ?? true);
+    setIsSaveModalOpen(true);
+  }, []);
+
+  const clearDraft = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (hasRestoredDraftRef.current) return;
+    if (typeof window === 'undefined') return;
+
+    const stored = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!stored) return;
+    try {
+      const draft = JSON.parse(stored) as PixelArtDraft;
+      hasRestoredDraftRef.current = true;
+      restoreDraft(draft);
+    } catch (error) {
+      console.error('Failed to restore draft:', error);
+    }
+  }, [isAuthenticated, restoreDraft]);
+
   const applyCustomSize = () => {
     const parsedRows = Number(customRowsInput);
     const parsedCols = Number(customColsInput || customRowsInput);
@@ -81,17 +167,13 @@ export default function PixelArtPage() {
       return;
     }
 
-    if (
-      parsedRows < 6 ||
-      parsedRows > 40 ||
-      parsedCols < 6 ||
-      parsedCols > 40
-    ) {
+    if (parsedRows < 6 || parsedRows > 40 || parsedCols < 6 || parsedCols > 40) {
       setCustomError('Pick values between 6 and 40.');
       return;
     }
 
     setCustomError(null);
+    skipNextResetRef.current = false;
     setRows(parsedRows);
     setCols(parsedCols);
   };
@@ -101,7 +183,10 @@ export default function PixelArtPage() {
     await navigator.clipboard.writeText(JSON.stringify({ rows, cols, pixels: grid }));
   };
 
-  const paintedPixels = grid.flat().filter((color) => color !== defaultColor).length;
+  const paintedPixels = useMemo(
+    () => grid.flat().filter((color) => color !== defaultColor).length,
+    [grid],
+  );
 
   const downloadAsPNG = () => {
     const cellSize = 20;
@@ -132,8 +217,72 @@ export default function PixelArtPage() {
     }, 'image/png');
   };
 
+  const handleSaveClick = () => {
+    persistDraft();
+    if (!isAuthenticated) {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(REDIRECT_KEY, '/interactives/pixel-art');
+      }
+      router.push('/auth/signin?redirectTo=/interactives/pixel-art');
+      return;
+    }
+    setSaveError(null);
+    setSaveStatus('idle');
+    setIsSaveModalOpen(true);
+  };
+
+  const handleConfirmSave = async () => {
+    setSaveStatus('saving');
+    setSaveError(null);
+    persistDraft({
+      title: titleInput,
+      description: descriptionInput,
+      isPublic: isPublicInput,
+    });
+
+    try {
+      const response = await fetch('/api/pixel-art', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: titleInput,
+          description: descriptionInput,
+          rows,
+          cols,
+          grid,
+          isPublic: isPublicInput,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Unable to save artwork.');
+      }
+
+      setSaveStatus('success');
+      clearDraft();
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(REDIRECT_KEY);
+      }
+      setTimeout(() => {
+        setIsSaveModalOpen(false);
+        setSaveStatus('idle');
+      }, 1200);
+    } catch (error) {
+      console.error('Save failed:', error);
+      setSaveStatus('error');
+      setSaveError(error instanceof Error ? error.message : 'Failed to save artwork.');
+    }
+  };
+
+  const closeModal = () => {
+    setIsSaveModalOpen(false);
+    setSaveStatus('idle');
+  };
+
   return (
     <section className="pb-16">
+      <PixelArtNav />
       <div className="space-y-8">
         <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-fuchsia-200">Creative corner</p>
@@ -271,6 +420,12 @@ export default function PixelArtPage() {
                     <ArrowDownTrayIcon className="h-4 w-4" /> Download PNG
                   </span>
                 </button>
+                <button
+                  onClick={handleSaveClick}
+                  className="flex-1 rounded-2xl border border-primary px-4 py-3 font-semibold text-primary transition hover:bg-primary hover:text-white"
+                >
+                  Save to gallery
+                </button>
               </div>
             </div>
 
@@ -321,6 +476,80 @@ export default function PixelArtPage() {
           </div>
         </div>
       </div>
+      {isSaveModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">Save to gallery</h3>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="text-slate-500 transition hover:text-slate-700"
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Title <span className="text-slate-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={titleInput}
+                  onChange={(event) => setTitleInput(event.target.value)}
+                  placeholder="e.g. Campus skyline at night"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Description <span className="text-slate-400">(optional)</span>
+                </label>
+                <textarea
+                  value={descriptionInput}
+                  onChange={(event) => setDescriptionInput(event.target.value)}
+                  placeholder="What inspired this piece?"
+                  rows={3}
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <label className="flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={isPublicInput}
+                  onChange={(event) => setIsPublicInput(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                Make this artwork visible in the public gallery.
+              </label>
+              {saveError && <p className="text-sm text-rose-500">{saveError}</p>}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSave}
+                  disabled={saveStatus === 'saving'}
+                  className="flex-1 rounded-xl border border-primary bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {saveStatus === 'saving'
+                    ? 'Saving...'
+                    : saveStatus === 'success'
+                      ? 'Saved!'
+                      : 'Save artwork'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
