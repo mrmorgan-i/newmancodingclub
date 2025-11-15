@@ -35,7 +35,7 @@ export default function CodeQuizPage() {
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<{ id: number; correct: boolean }[]>([]);
   const [completed, setCompleted] = useState(false);
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(() => Date.now());
   const [elapsed, setElapsed] = useState(0);
 
   const questionDeck: QuizQuestion[] = useMemo(
@@ -81,7 +81,7 @@ export default function CodeQuizPage() {
     setScore(0);
     setAnswers([]);
     setCompleted(false);
-    setStartTime(Date.now());
+    setStartTime(() => Date.now());
     setElapsed(0);
   };
 

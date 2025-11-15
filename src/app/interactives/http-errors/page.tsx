@@ -79,7 +79,7 @@ export default function MemoryGamePage() {
   }, [startTime, gameOver]);
 
   const handleCardClick = (index: number) => {
-    if (!startTime) setStartTime(Date.now());
+    if (!startTime) setStartTime(() => Date.now());
     if (
       isPeeking ||
       flippedIndices.length === 2 ||
