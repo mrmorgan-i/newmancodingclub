@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { TrashIcon, ArrowDownTrayIcon, CursorArrowRaysIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, ArrowDownTrayIcon, CursorArrowRaysIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 
 const defaultColor = '#FFFFFF';
 const palettes = [
@@ -23,18 +23,22 @@ const gridPresets = [
   { id: 20, label: '20×20 (detailed)' },
 ];
 
-const createInitialGrid = (size: number): string[][] =>
-  Array.from({ length: size }, () => Array.from({ length: size }, () => defaultColor));
+const createInitialGrid = (rows: number, cols?: number): string[][] =>
+  Array.from({ length: rows }, () => Array.from({ length: cols ?? rows }, () => defaultColor));
 
 export default function PixelArtPage() {
-  const [gridSize, setGridSize] = useState(gridPresets[1].id);
-  const [grid, setGrid] = useState<string[][]>(() => createInitialGrid(gridSize));
+  const [rows, setRows] = useState(gridPresets[1].id);
+  const [cols, setCols] = useState(gridPresets[1].id);
+  const [grid, setGrid] = useState<string[][]>(() => createInitialGrid(rows, cols));
   const [selectedColor, setSelectedColor] = useState<string>(palettes[0]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [customRowsInput, setCustomRowsInput] = useState('');
+  const [customColsInput, setCustomColsInput] = useState('');
+  const [customError, setCustomError] = useState<string | null>(null);
 
   useEffect(() => {
-    setGrid(createInitialGrid(gridSize));
-  }, [gridSize]);
+    setGrid(createInitialGrid(rows, cols));
+  }, [rows, cols]);
 
   useEffect(() => {
     const handlePointerUp = () => setIsDrawing(false);
@@ -65,15 +69,68 @@ export default function PixelArtPage() {
   };
 
   const handleClearGrid = () => {
-    setGrid(createInitialGrid(gridSize));
+    setGrid(createInitialGrid(rows, cols));
+  };
+
+  const applyCustomSize = () => {
+    const parsedRows = Number(customRowsInput);
+    const parsedCols = Number(customColsInput || customRowsInput);
+
+    if (!Number.isInteger(parsedRows) || !Number.isInteger(parsedCols)) {
+      setCustomError('Enter whole numbers for rows and columns.');
+      return;
+    }
+
+    if (
+      parsedRows < 6 ||
+      parsedRows > 40 ||
+      parsedCols < 6 ||
+      parsedCols > 40
+    ) {
+      setCustomError('Pick values between 6 and 40.');
+      return;
+    }
+
+    setCustomError(null);
+    setRows(parsedRows);
+    setCols(parsedCols);
   };
 
   const copyDesign = async () => {
     if (!navigator?.clipboard) return;
-    await navigator.clipboard.writeText(JSON.stringify({ gridSize, pixels: grid }));
+    await navigator.clipboard.writeText(JSON.stringify({ rows, cols, pixels: grid }));
   };
 
   const paintedPixels = grid.flat().filter((color) => color !== defaultColor).length;
+
+  const downloadAsPNG = () => {
+    const cellSize = 20;
+    const canvas = document.createElement('canvas');
+    canvas.width = cols * cellSize;
+    canvas.height = rows * cellSize;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    grid.forEach((row, rowIndex) => {
+      row.forEach((color, colIndex) => {
+        context.fillStyle = color || defaultColor;
+        context.fillRect(colIndex * cellSize, rowIndex * cellSize, cellSize, cellSize);
+      });
+    });
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `pixel-art-${rows}x${cols}.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  };
 
   return (
     <section className="pb-16">
@@ -87,7 +144,7 @@ export default function PixelArtPage() {
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'Grid size', value: `${gridSize}×${gridSize}` },
+              { label: 'Grid size', value: `${rows}×${cols}` },
               { label: 'Palette colors', value: palettes.length },
               { label: 'Pixels filled', value: paintedPixels },
               { label: 'Output', value: 'JSON clipboard' },
@@ -109,9 +166,12 @@ export default function PixelArtPage() {
                   {gridPresets.map((preset) => (
                     <button
                       key={preset.id}
-                      onClick={() => setGridSize(preset.id)}
+                      onClick={() => {
+                        setRows(preset.id);
+                        setCols(preset.id);
+                      }}
                       className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
-                        preset.id === gridSize
+                        preset.id === rows && preset.id === cols
                           ? 'border-primary bg-primary/10 text-primary'
                           : 'border-slate-200 text-slate-600 hover:border-primary/40'
                       }`}
@@ -119,6 +179,38 @@ export default function PixelArtPage() {
                       <p className="font-semibold">{preset.label}</p>
                     </button>
                   ))}
+                </div>
+                <div className="mt-4 space-y-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                  <p className="font-semibold text-slate-700">Custom size</p>
+                  <p>Pick any rectangular canvas from 6 to 40 cells.</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="number"
+                      min={6}
+                      max={40}
+                      value={customRowsInput}
+                      onChange={(event) => setCustomRowsInput(event.target.value)}
+                      placeholder="Rows"
+                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    <input
+                      type="number"
+                      min={6}
+                      max={40}
+                      value={customColsInput}
+                      onChange={(event) => setCustomColsInput(event.target.value)}
+                      placeholder="Cols"
+                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCustomSize}
+                      className="col-span-2 rounded-xl border border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                    >
+                      Apply custom size
+                    </button>
+                  </div>
+                  {customError && <p className="text-xs text-rose-500">{customError}</p>}
                 </div>
               </div>
 
@@ -168,7 +260,15 @@ export default function PixelArtPage() {
                   className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
                 >
                   <span className="inline-flex items-center gap-2">
-                    <ArrowDownTrayIcon className="h-4 w-4" /> Copy layout
+                    <DocumentDuplicateIcon className="h-4 w-4" /> Copy layout
+                  </span>
+                </button>
+                <button
+                  onClick={downloadAsPNG}
+                  className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <ArrowDownTrayIcon className="h-4 w-4" /> Download PNG
                   </span>
                 </button>
               </div>
@@ -178,7 +278,7 @@ export default function PixelArtPage() {
               <div
                 className="grid border-2 border-slate-200 shadow-xl"
                 style={{
-                  gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
+                  gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
                   touchAction: 'none',
                 }}
               >
@@ -213,7 +313,7 @@ export default function PixelArtPage() {
                   <p>
                     Painted pixels:{' '}
                     <span className="font-semibold text-slate-800">{paintedPixels}</span> /{' '}
-                    {gridSize * gridSize}. Copy the layout to paste into shared docs or Next.js canvases.
+                    {rows * cols}. Copy the layout to paste into shared docs or Next.js canvases.
                   </p>
                 </div>
               </div>
