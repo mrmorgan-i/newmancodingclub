@@ -159,7 +159,6 @@ export default function InteractivesPage() {
               { label: 'Interactives live', value: activities.length },
               { label: 'Avg. play time', value: '~6 min' },
               { label: 'Built by', value: 'Club members' },
-              { label: 'Modes covered', value: 'Games · Creativity · Quiz' },
             ].map((stat) => (
               <div
                 key={stat.label}
