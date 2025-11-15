@@ -10,10 +10,6 @@ export const footerDetails: {
     subheading: "Fostering interest in computer programming and software development among Newman University students.",
     quickLinks: [
         {
-            text: "About",
-            url: "#features"
-        },
-        {
             text: "Events",
             url: "#events"
         },
@@ -22,8 +18,12 @@ export const footerDetails: {
             url: "#leadership"
         },
         {
-            text: "FAQ",
-            url: "#faq"
+            text: "Interactives",
+            url: "/interactives"
+        },
+        {
+            text: "Resources",
+            url: "/resources"
         }
     ],
     email: 'newmancodingclub@gmail.com',
