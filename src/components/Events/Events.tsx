@@ -3,15 +3,17 @@ import { events } from "@/data/events";
 import { sortEventsByDate, getNextHighlightEvent } from "@/utils/eventUtils";
 
 const Events: React.FC = () => {
-    const sortedEvents = sortEventsByDate(events);
-    const nextHighlightEvent = getNextHighlightEvent(events);
+    const now = new Date();
+    const sortedEvents = sortEventsByDate(events, now);
+    const nextHighlightEvent = getNextHighlightEvent(events, now);
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sortedEvents.map((event) => (
                 <EventCard 
                     key={`${event.title}-${event.isRecurring ? 'recurring' : event.date}`}
-                    event={event} 
+                    event={event}
+                    now={now}
                     highlight={nextHighlightEvent?.title === event.title && !event.isRecurring}
                 />
             ))}

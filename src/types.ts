@@ -71,7 +71,7 @@ export interface ISocials {
     [key: string]: string | undefined;
 }
 
-export interface IEvent {
+interface IEventBase {
     title: string;
     date: string;
     time: string;
@@ -79,10 +79,23 @@ export interface IEvent {
     description: string;
     tags: string[];
     registerLink: string;
-    isRecurring?: boolean;
-    recurrencePattern?: 'weekly' | 'biweekly' | 'monthly';
-    dayOfWeek?: number; // 0 = Sunday
-    startDate?: string;
-    endDate?: string;
+    timeZone?: string;
     isActive?: boolean;
 }
+
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+export interface IRecurringEvent extends IEventBase {
+    isRecurring: true;
+    recurrencePattern: 'weekly';
+    dayOfWeek: Weekday;
+    startDate: string;
+    endDate: string;
+    timeZone: string;
+}
+
+export interface ISingleEvent extends IEventBase {
+    isRecurring: false;
+}
+
+export type IEvent = IRecurringEvent | ISingleEvent;

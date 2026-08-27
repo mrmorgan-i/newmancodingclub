@@ -1,9 +1,9 @@
-import { IEvent } from "@/types";
+import type { IEvent } from "@/types";
 
 export const events: IEvent[] = [
     {
         title: "Casual Coding",
-        date: "Every Tuesday",
+        date: "Every Thursday",
         time: "7:00 PM - 8:00 PM",
         location: "Library Learning Commons",
         description: "Casual coding session where members can work on their own projects or learn new skills.",
@@ -11,8 +11,10 @@ export const events: IEvent[] = [
         registerLink: "#",
         isRecurring: true,
         recurrencePattern: "weekly",
-        dayOfWeek: 2,
-        startDate: "2025-08-26",
+        dayOfWeek: 4,
+        startDate: "2026-08-27",
+        endDate: "2026-12-03",
+        timeZone: "America/Chicago",
         isActive: true
     },
     {

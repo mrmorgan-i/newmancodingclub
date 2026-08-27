@@ -2,21 +2,22 @@ import clsx from "clsx";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 
-import { IEvent } from "@/types";
+import type { IEvent } from "@/types";
 import { getDisplayDate, getEventStatus, hasEventPassed } from "@/utils/eventUtils";
 
 interface Props {
     event: IEvent;
+    now: Date;
     highlight?: boolean;
 }
 
-const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
+const EventCard: React.FC<Props> = ({ event, now, highlight }: Props) => {
     const { title, time, location, description, tags, registerLink, isRecurring } = event;
     
-    const displayDate = getDisplayDate(event);
-    const eventStatus = getEventStatus(event);
+    const displayDate = getDisplayDate(event, now);
+    const eventStatus = getEventStatus(event, now);
     const eventIsToday = eventStatus === 'today';
-    const eventHasPassed = hasEventPassed(event);
+    const eventHasPassed = hasEventPassed(event, now);
     
     const isFlagshipEvent = isRecurring && title === "Casual Coding";
     const cardClasses = clsx(
@@ -41,7 +42,7 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                     )}>{title}</h3>
                     {isFlagshipEvent && (
                         <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                            ⭐ Every Tuesday
+                            ⭐ {event.date}
                         </span>
                     )}
                 </div>
@@ -56,9 +57,9 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                         Today!
                     </span>
                 )}
-                {eventHasPassed && !isRecurring && (
+                {eventHasPassed && (
                     <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 text-xs font-semibold rounded-full mb-3">
-                        Past Event
+                        {isRecurring ? "Semester ended" : "Past Event"}
                     </span>
                 )}
                 
@@ -77,16 +78,15 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                     </div>
                 </div>
                 
-                {isRecurring ? (
+                {eventHasPassed ? (
+                    <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
+                        {isRecurring ? "Semester concluded" : "Event Completed"}
+                    </div>
+                ) : isRecurring ? (
                     <div className="w-full py-3 px-4 rounded-full text-center font-medium bg-blue-100 text-blue-800">
                         No registration needed!
                     </div>
-                ) : (
-                    eventHasPassed ? (
-                        <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
-                            Event Completed
-                        </div>
-                    ) : highlight ? (
+                ) : highlight ? (
                         <Link href={registerLink} target="_blank" rel="noopener noreferrer">
                             <button className="w-full py-3 px-4 rounded-full transition-colors bg-primary hover:bg-primary-accent text-white">
                                 {eventIsToday ? "Register Today!" : "Register Now"}
@@ -96,7 +96,6 @@ const EventCard: React.FC<Props> = ({ event, highlight }: Props) => {
                         <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
                             Coming Soon
                         </div>
-                    )
                 )}
             </div>
             <div className="p-6 mt-1">

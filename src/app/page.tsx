@@ -10,6 +10,8 @@ import Events from "@/components/Events/Events";
 import TechStack from "@/components/TechStack";
 import Leadership from "@/components/Leadership";
 
+export const dynamic = "force-dynamic";
+
 const HomePage: React.FC = () => {
   return (
     <>
