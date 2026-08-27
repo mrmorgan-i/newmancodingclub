@@ -1,7 +1,13 @@
 import { betterAuth } from 'better-auth';
+import { APIError } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/lib/db';
 import { sendEmail } from '@/lib/email/resend';
+import {
+  ACCOUNT_EMAIL_REQUIREMENT,
+  isAllowedAccountEmail,
+  normalizeEmail,
+} from '@/lib/auth/emailPolicy';
 import {
   getVerificationEmailTemplate,
   getPasswordResetEmailTemplate,
@@ -11,6 +17,28 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
+
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (candidate) => {
+          if (!isAllowedAccountEmail(candidate.email)) {
+            throw APIError.from('BAD_REQUEST', {
+              code: 'INVALID_EMAIL_DOMAIN',
+              message: ACCOUNT_EMAIL_REQUIREMENT,
+            });
+          }
+
+          return {
+            data: {
+              ...candidate,
+              email: normalizeEmail(candidate.email),
+            },
+          };
+        },
+      },
+    },
+  },
 
   emailAndPassword: {
     enabled: true,

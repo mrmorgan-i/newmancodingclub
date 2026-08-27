@@ -72,6 +72,7 @@ export interface ISocials {
 }
 
 interface IEventBase {
+    id?: number;
     title: string;
     date: string;
     time: string;
@@ -79,6 +80,7 @@ interface IEventBase {
     description: string;
     tags: string[];
     registerLink: string;
+    isFeatured?: boolean;
     timeZone?: string;
     isActive?: boolean;
 }

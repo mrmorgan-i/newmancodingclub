@@ -231,6 +231,29 @@ The website is deployed on [Vercel](https://vercel.com/). The deployment process
 Copy `.env.example` to `.env.local` and provide the required values. Production
 values belong in the Vercel project settings and must not be committed.
 
+### Admin Desk
+
+Admin access is separate from public member accounts and has no open registration.
+After applying the database migrations, create and verify the first account, then
+bootstrap it as the initial owner:
+
+```bash
+bun run db:migrate
+bun run admin:bootstrap owner@example.com
+```
+
+For the authorized club Gmail owner, the one-time provisioning command creates
+the verified account, grants owner access, and sends a password setup link without
+printing or storing a temporary password:
+
+```bash
+bun run admin:provision-owner
+```
+
+That owner can invite editors or additional owners from `/admin/access`. Invitations
+are email-bound, expire after seven days, and are stored as one-way token hashes.
+Subsequent content changes are recorded in the audit log.
+
 ### Troubleshooting
 
 - **Build errors**: Run `bun install`, confirm the required environment variables, then run `bun run build`

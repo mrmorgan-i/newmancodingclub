@@ -381,3 +381,80 @@ An automatic welcome email with the GroupMe link was sent to the student.
     `,
   };
 }
+
+export function getAdminInvitationEmailTemplate({
+  inviteUrl,
+  inviterName,
+  roleLabel,
+}: {
+  inviteUrl: string;
+  inviterName: string;
+  roleLabel: string;
+}) {
+  const safeInviteUrl = escapeHtml(inviteUrl);
+  const safeInviterName = escapeHtml(inviterName);
+  const safeRoleLabel = escapeHtml(roleLabel);
+
+  return {
+    subject: 'You have been invited to the Coding Club admin desk',
+    html: `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin invitation</title>
+  </head>
+  <body style="margin:0;background:#f3f7f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#172327;">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f3f7f7;padding:40px 12px;">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;background:#ffffff;border:1px solid #d8e3e3;border-radius:16px;overflow:hidden;">
+            <tr>
+              <td style="background:#172327;padding:28px 36px;color:#ffffff;">
+                <p style="margin:0 0 8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#83c9cb;">Newman Coding Club / Club desk</p>
+                <h1 style="margin:0;font-size:25px;line-height:1.2;">Help keep the club current.</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px 36px;">
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">${safeInviterName} invited you to the admin desk as <strong>${safeRoleLabel}</strong>.</p>
+                <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#506064;">Use the invited email address to sign in or create your account, then accept the invitation.</p>
+                <a href="${safeInviteUrl}" style="display:inline-block;background:#3e9ba2;color:#ffffff;font-weight:700;border-radius:999px;padding:12px 24px;text-decoration:none;">Review invitation</a>
+                <p style="margin:28px 0 8px;font-size:13px;color:#708084;">This invitation expires in 7 days. If the button does not work, copy this address:</p>
+                <p style="margin:0;word-break:break-all;font-size:13px;"><a href="${safeInviteUrl}" style="color:#2f7f85;">${safeInviteUrl}</a></p>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:18px 0 0;color:#7b898c;font-size:12px;">Newman Coding Club • Newman University Wichita</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+    `,
+    text: `
+Newman Coding Club admin invitation
+
+${inviterName} invited you to the club admin desk as ${roleLabel}.
+
+Sign in or create an account with the invited email address, then accept here:
+${inviteUrl}
+
+This invitation expires in 7 days.
+    `,
+  };
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>'"]/g, (character) => {
+    const entities: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;',
+    };
+    return entities[character] ?? character;
+  });
+}

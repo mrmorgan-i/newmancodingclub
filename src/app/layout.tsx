@@ -5,8 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Source_Sans_3, Manrope } from "next/font/google";
 import { Toaster } from 'sonner';
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import SiteChrome from '@/components/SiteChrome';
 import { siteDetails } from '@/data/siteDetails';
 
 import "./globals.css";
@@ -102,13 +101,9 @@ export default function RootLayout({
         className={`${manrope.className} ${sourceSans.className} antialiased`}
       >
         {siteDetails.googleAnalyticsId && <GoogleAnalytics gaId={siteDetails.googleAnalyticsId} />}
-        <Header />
-        <main>
-          {children}
-          <Analytics />
-          <SpeedInsights />
-        </main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
+        <Analytics />
+        <SpeedInsights />
         <Toaster position="bottom-right" richColors />
       </body>
     </html>

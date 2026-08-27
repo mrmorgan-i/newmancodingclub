@@ -15,6 +15,27 @@
       "when": 1787870871216,
       "tag": "0001_better-auth-1-7",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787872503240,
+      "tag": "0002_admin-foundation-events",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787872763063,
+      "tag": "0003_event-schedule-integrity",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1787872817257,
+      "tag": "0004_featured-events",
+      "breakpoints": true
     }
   ]
 }

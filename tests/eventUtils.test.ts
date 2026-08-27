@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { events } from "../src/data/events";
-import type { IRecurringEvent } from "../src/types";
+import type { IEvent, IRecurringEvent } from "../src/types";
 import {
     getDisplayDate,
     getNextOccurrence,
@@ -11,16 +10,52 @@ import {
     sortEventsByDate,
 } from "../src/utils/eventUtils";
 
-const casualCodingEvent = events.find(
-    (event): event is IRecurringEvent =>
-        event.isRecurring && event.title === "Casual Coding",
-);
+const casualCoding: IRecurringEvent = {
+    id: 1,
+    title: "Casual Coding",
+    date: "Every Thursday",
+    time: "7:00 PM - 8:00 PM",
+    location: "Library Learning Commons",
+    description: "Weekly coding session.",
+    tags: ["Coding"],
+    registerLink: "#",
+    isFeatured: true,
+    isRecurring: true,
+    recurrencePattern: "weekly",
+    dayOfWeek: 4,
+    startDate: "2026-08-27",
+    endDate: "2026-12-03",
+    timeZone: "America/Chicago",
+    isActive: true,
+};
 
-if (!casualCodingEvent) {
-    throw new Error("Casual Coding test fixture is missing.");
-}
-
-const casualCoding: IRecurringEvent = casualCodingEvent;
+const events: IEvent[] = [
+    casualCoding,
+    {
+        id: 2,
+        title: "Honors x Coding Club Crossover",
+        date: "2025-11-20",
+        time: "5:00 PM - 6:30 PM",
+        location: "Library CTL",
+        description: "AI workshop.",
+        tags: ["AI"],
+        registerLink: "https://example.com",
+        isRecurring: false,
+        isActive: true,
+    },
+    {
+        id: 3,
+        title: "Guest Speaker Appearance",
+        date: "TBD",
+        time: "12:00 PM - 1:00 PM",
+        location: "BSGC 104",
+        description: "Guest speaker.",
+        tags: ["Guest Speaker"],
+        registerLink: "#",
+        isRecurring: false,
+        isActive: true,
+    },
+];
 
 function occurrenceDate(now: string): string | null {
     return getNextOccurrence(casualCoding, new Date(now))?.toISOString().slice(0, 10) ?? null;

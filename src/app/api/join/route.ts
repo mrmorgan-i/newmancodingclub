@@ -4,38 +4,30 @@ import {
   getMemberWelcomeTemplate,
   getAdminNewMemberTemplate,
 } from '@/lib/email/templates';
-
-const majorLabels: Record<string, string> = {
-  fa: 'Fine Arts',
-  hc: 'Healthcare',
-  stem: 'STEM',
-  da: 'Data Analytics',
-  cs: 'Computer Science',
-};
+import { parseJoinSubmission } from '@/modules/members/joinSubmission';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, major } = await req.json();
+    let body: unknown;
 
-    if (!name || !email) {
-      return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
-    }
-
-    // validation
-    if (!name || !email || !phone || !major) {
-      return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
-    }
-    if (!email.endsWith('@newmanu.edu')) {
-      return NextResponse.json({ error: 'Please use your Newman University email (@newmanu.edu).' }, { status: 400 });
-    }
-    if (!phone.match(/^\d{10}$/)) {
-      return NextResponse.json({ error: 'Please enter a valid 10-digit phone number.' }, { status: 400 });
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid signup request.' },
+        { status: 400 },
+      );
     }
 
-    const formattedMajor =
-      (typeof major === 'string' && majorLabels[major.toLowerCase()]) ||
-      (major && typeof major === 'string' && major.trim()) ||
-      'Not specified';
+    const submission = parseJoinSubmission(body);
+    if (!submission.success) {
+      return NextResponse.json(
+        { error: submission.error },
+        { status: 400 },
+      );
+    }
+
+    const { name, email, phone, major } = submission.data;
 
     const welcome = getMemberWelcomeTemplate({ name });
     await sendEmail({
@@ -49,7 +41,7 @@ export async function POST(req: Request) {
       name,
       email,
       phone,
-      major: formattedMajor,
+      major,
     });
     await sendEmail({
       to: process.env.RESEND_EMAIL ?? 'newmancodingclub@gmail.com',

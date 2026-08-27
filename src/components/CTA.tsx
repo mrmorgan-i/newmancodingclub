@@ -12,6 +12,7 @@ const CTA: React.FC = () => {
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
     const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const [submissionError, setSubmissionError] = useState("");
 
     // Handle name change
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +99,7 @@ const CTA: React.FC = () => {
         }
         
         setSubmissionStatus('submitting');
+        setSubmissionError("");
         
         try {
             const response = await fetch('/api/join', {
@@ -121,10 +123,13 @@ const CTA: React.FC = () => {
                 setPhone("");
                 setMajor("");
             } else {
+                const result = await response.json().catch(() => null) as { error?: string } | null;
+                setSubmissionError(result?.error ?? 'There was a problem processing your request. Please try again.');
                 setSubmissionStatus('error');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
+            setSubmissionError('We could not reach the signup service. Please try again.');
             setSubmissionStatus('error');
         }
     };
@@ -236,7 +241,7 @@ const CTA: React.FC = () => {
                                         {submissionStatus === 'submitting' ? 'Processing...' : 'Join the Club'}
                                     </button>
                                     {submissionStatus === 'error' && (
-                                        <p className="text-red-400 text-sm">There was a problem processing your request. Please try again.</p>
+                                        <p className="text-red-400 text-sm" role="alert">{submissionError}</p>
                                     )}
                                 </form>
                             )}

@@ -50,6 +50,7 @@ function ResetPasswordForm() {
     try {
       const { error } = await authClient.resetPassword({
         newPassword: password,
+        token,
       });
 
       if (error) {

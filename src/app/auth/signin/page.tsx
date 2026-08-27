@@ -4,6 +4,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { signIn, signUp } from '@/lib/auth/client';
+import {
+  ACCOUNT_EMAIL_REQUIREMENT,
+  isAllowedAccountEmail,
+  normalizeEmail,
+} from '@/lib/auth/emailPolicy';
 import { toast } from 'sonner';
 
 const REDIRECT_KEY = 'auth:redirect';
@@ -33,6 +38,8 @@ function AuthForm() {
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading'>('idle');
   const [feedback, setFeedback] = useState<string | null>(null);
+  const isAdminFlow =
+    redirectTo.startsWith('/admin') || redirectTo.startsWith('/accept-admin-invite');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,9 +47,11 @@ function AuthForm() {
     setFeedback(null);
 
     try {
+      const normalizedEmail = normalizeEmail(email);
+
       if (mode === 'signin') {
         const { error } = await signIn.email({
-          email,
+          email: normalizedEmail,
           password,
         });
 
@@ -60,10 +69,17 @@ function AuthForm() {
         }
         router.push(redirectTo || '/');
       } else {
+        if (!isAllowedAccountEmail(normalizedEmail)) {
+          setFeedback(ACCOUNT_EMAIL_REQUIREMENT);
+          toast.error(ACCOUNT_EMAIL_REQUIREMENT);
+          setStatus('idle');
+          return;
+        }
+
         const { error } = await signUp.email({
-          email,
+          email: normalizedEmail,
           password,
-          name: name || email.split('@')[0],
+          name: name || normalizedEmail.split('@')[0],
         });
 
         if (error) {
@@ -100,10 +116,18 @@ function AuthForm() {
         <div className="mb-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">Newman Coding Club</p>
           <h1 className="mt-2 text-2xl font-semibold text-slate-900">
-            {mode === 'signin' ? 'Sign in to save your art' : 'Create an account'}
+            {mode === 'signin'
+              ? isAdminFlow
+                ? 'Sign in to the club desk'
+                : 'Sign in to save your art'
+              : 'Create an account'}
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Use your Newman email so we can connect your gallery submissions.
+            {isAdminFlow
+              ? 'Use the same email address that received your invitation.'
+              : mode === 'signup'
+                ? 'Use your Newman email. The authorized club owner address is also accepted.'
+                : 'Sign in with the email attached to your account.'}
           </p>
         </div>
 

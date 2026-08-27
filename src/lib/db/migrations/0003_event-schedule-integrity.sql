@@ -1,0 +1,1 @@
+ALTER TABLE "content_event" ADD CONSTRAINT "content_event_weekly_day_check" CHECK ("content_event"."kind" = 'single' OR (EXTRACT(DOW FROM "content_event"."startDate")::integer = "content_event"."dayOfWeek" AND EXTRACT(DOW FROM "content_event"."endDate")::integer = "content_event"."dayOfWeek"));

@@ -19,7 +19,8 @@ const EventCard: React.FC<Props> = ({ event, now, highlight }: Props) => {
     const eventIsToday = eventStatus === 'today';
     const eventHasPassed = hasEventPassed(event, now);
     
-    const isFlagshipEvent = isRecurring && title === "Casual Coding";
+    const isFlagshipEvent = event.isFeatured === true;
+    const hasRegistration = Boolean(registerLink && registerLink !== '#');
     const cardClasses = clsx(
         "w-full max-w-sm mx-auto rounded-xl border lg:max-w-full transition-all duration-200",
         {
@@ -82,17 +83,20 @@ const EventCard: React.FC<Props> = ({ event, now, highlight }: Props) => {
                     <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
                         {isRecurring ? "Semester concluded" : "Event Completed"}
                     </div>
+                ) : hasRegistration ? (
+                    <Link
+                        href={registerLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full rounded-full bg-primary px-4 py-3 text-center font-medium text-white transition-colors hover:bg-primary-accent"
+                    >
+                        {eventIsToday ? "Register Today!" : "Register Now"}
+                    </Link>
                 ) : isRecurring ? (
                     <div className="w-full py-3 px-4 rounded-full text-center font-medium bg-blue-100 text-blue-800">
                         No registration needed!
                     </div>
-                ) : highlight ? (
-                        <Link href={registerLink} target="_blank" rel="noopener noreferrer">
-                            <button className="w-full py-3 px-4 rounded-full transition-colors bg-primary hover:bg-primary-accent text-white">
-                                {eventIsToday ? "Register Today!" : "Register Now"}
-                            </button>
-                        </Link>
-                    ) : (
+                ) : (
                         <div className="w-full py-3 px-4 rounded-full bg-gray-100 text-gray-500 text-center cursor-default">
                             Coming Soon
                         </div>

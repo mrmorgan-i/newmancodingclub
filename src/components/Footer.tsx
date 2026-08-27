@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
                                 alt="devICT"
                                 width={128}
                                 height={128}
-                                className="h-6 md:h-8"
+                                className="h-6 w-auto md:h-8"
                             />
                         </a>
                     </div>
