@@ -30,6 +30,7 @@ interface AdminShellProps {
 const navItems = [
   { href: '/admin', label: 'Overview', icon: HiOutlineHome },
   { href: '/admin/events', label: 'Events', icon: HiOutlineCalendarDays },
+  { href: '/admin/members', label: 'Members', icon: HiOutlineUserGroup },
 ] as const;
 
 export default function AdminShell({ children, user }: AdminShellProps) {
@@ -164,7 +165,7 @@ function AdminNavigation({
 
       <nav className="flex-1 overflow-y-auto px-3 py-6" aria-label="Admin navigation">
         <p className="px-3 pb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.19em] text-white/35">
-          Publishing
+          Workspace
         </p>
         <div className="space-y-1">
           {navItems.map((item) => {
@@ -245,6 +246,7 @@ function AdminNavigation({
 
 function getPageLabel(pathname: string): string {
   if (pathname.startsWith('/admin/events')) return 'Events';
+  if (pathname.startsWith('/admin/members')) return 'Members';
   if (pathname.startsWith('/admin/access')) return 'Access';
   if (pathname.startsWith('/admin/invitations')) return 'Invitation';
   return 'Overview';

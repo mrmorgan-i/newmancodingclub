@@ -64,7 +64,8 @@ export default async function AdminOverviewPage() {
             <dl className="mt-5 divide-y divide-[#ccdcda]">
               <Metric label="Published events" value={overview.counts.publishedEvents} />
               <Metric label="Draft events" value={overview.counts.draftEvents} />
-              <Metric label="Admin team" value={overview.counts.members} />
+              <Metric label="Club members" value={overview.counts.clubMembers} />
+              <Metric label="Admin team" value={overview.counts.adminMembers} />
               {isOwner && (
                 <Metric
                   label="Invitations waiting"

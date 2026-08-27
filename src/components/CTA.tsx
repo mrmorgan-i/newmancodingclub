@@ -13,6 +13,7 @@ const CTA: React.FC = () => {
     const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
     const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
     const [submissionError, setSubmissionError] = useState("");
+    const [emailDelivery, setEmailDelivery] = useState<'sent' | 'delayed'>('sent');
 
     // Handle name change
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +117,8 @@ const CTA: React.FC = () => {
             });
             
             if (response.ok) {
+                const result = await response.json().catch(() => null) as { emailDelivery?: 'sent' | 'delayed' } | null;
+                setEmailDelivery(result?.emailDelivery ?? 'sent');
                 setSubmissionStatus('success');
                 // Reset form
                 setName("");
@@ -169,7 +172,9 @@ const CTA: React.FC = () => {
                                     </a>
                                     
                                     <p className="text-sm opacity-90">
-                                        We&apos;ve sent you a welcome email with additional information. Please check your inbox (and junk folder)--and pretty please add us to your contacts!
+                                        {emailDelivery === 'sent'
+                                            ? 'We sent a welcome email with additional information. Check your inbox and junk folder, and please add us to your contacts.'
+                                            : 'Your signup is saved. Email delivery is delayed right now, but you can join the GroupMe immediately.'}
                                     </p>
                                 </div>
                             ) : (

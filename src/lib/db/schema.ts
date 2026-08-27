@@ -221,6 +221,27 @@ export const contentEvent = pgTable(
   ],
 );
 
+export const clubMember = pgTable(
+  'club_member',
+  {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    phone: text('phone').notNull(),
+    major: text('major').notNull().default('Not specified'),
+    welcomeEmailSentAt: timestamp('welcomeEmailSentAt'),
+    lastEmailAttemptAt: timestamp('lastEmailAttemptAt'),
+    lastEmailError: text('lastEmailError'),
+    joinedAt: timestamp('joinedAt').notNull().defaultNow(),
+    lastJoinedAt: timestamp('lastJoinedAt').notNull().defaultNow(),
+    updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('club_member_email_uidx').on(table.email),
+    index('club_member_last_joined_at_idx').on(table.lastJoinedAt),
+  ],
+);
+
 export const verification = pgTable(
   'verification',
   {
@@ -286,3 +307,5 @@ export type AdminInvitation = typeof adminInvitation.$inferSelect;
 export type AuditLog = typeof auditLog.$inferSelect;
 export type ContentEvent = typeof contentEvent.$inferSelect;
 export type NewContentEvent = typeof contentEvent.$inferInsert;
+export type ClubMember = typeof clubMember.$inferSelect;
+export type NewClubMember = typeof clubMember.$inferInsert;

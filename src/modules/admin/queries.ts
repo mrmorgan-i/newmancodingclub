@@ -7,6 +7,7 @@ import {
   adminInvitation,
   adminMembership,
   auditLog,
+  clubMember,
   contentEvent,
   user,
 } from '@/lib/db/schema';
@@ -16,13 +17,20 @@ export async function getAdminOverview() {
   const context = await requireAdmin();
   const now = new Date();
 
-  const [eventCounts, memberCount, invitationCount, activity, activeSeries] =
-    await Promise.all([
+  const [
+    eventCounts,
+    adminMemberCount,
+    clubMemberCount,
+    invitationCount,
+    activity,
+    activeSeries,
+  ] = await Promise.all([
       db
         .select({ status: contentEvent.status, count: count() })
         .from(contentEvent)
         .groupBy(contentEvent.status),
       db.select({ count: count() }).from(adminMembership),
+      db.select({ count: count() }).from(clubMember),
       context.membership.role === 'owner'
         ? db
             .select({ count: count() })
@@ -75,10 +83,32 @@ export async function getAdminOverview() {
       archivedEvents:
         eventCounts.find((item) => item.status === 'archived')?.count ?? 0,
       draftEvents: eventCounts.find((item) => item.status === 'draft')?.count ?? 0,
-      members: memberCount[0]?.count ?? 0,
+      adminMembers: adminMemberCount[0]?.count ?? 0,
+      clubMembers: clubMemberCount[0]?.count ?? 0,
       pendingInvitations: invitationCount[0]?.count ?? 0,
       publishedEvents:
         eventCounts.find((item) => item.status === 'published')?.count ?? 0,
     },
   };
+}
+
+export async function getClubMembers() {
+  await requireAdmin();
+
+  return db
+    .select({
+      id: clubMember.id,
+      name: clubMember.name,
+      email: clubMember.email,
+      phone: clubMember.phone,
+      major: clubMember.major,
+      welcomeEmailSentAt: clubMember.welcomeEmailSentAt,
+      lastEmailAttemptAt: clubMember.lastEmailAttemptAt,
+      lastEmailError: clubMember.lastEmailError,
+      joinedAt: clubMember.joinedAt,
+      lastJoinedAt: clubMember.lastJoinedAt,
+    })
+    .from(clubMember)
+    .orderBy(desc(clubMember.lastJoinedAt))
+    .limit(250);
 }

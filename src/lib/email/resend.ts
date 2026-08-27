@@ -43,6 +43,10 @@ function handleEmailError(error: unknown): never {
       ? errorRecord.statusCode
       : undefined;
   const normalizedMessage = message.toLowerCase();
+  const errorName =
+    typeof errorRecord?.name === 'string'
+      ? errorRecord.name.toLowerCase()
+      : undefined;
 
   if (
     statusCode === 429 ||
@@ -55,6 +59,22 @@ function handleEmailError(error: unknown): never {
   }
 
   if (
+    errorName === 'validation_error' ||
+    (normalizedMessage.includes('domain') &&
+      normalizedMessage.includes('verif')) ||
+    statusCode === 400 ||
+    statusCode === 422 ||
+    normalizedMessage.includes('invalid') ||
+    normalizedMessage.includes('malformed')
+  ) {
+    throw new EmailValidationError(
+      normalizedMessage.includes('domain')
+        ? 'Email sender domain is not verified.'
+        : 'Invalid email format or configuration.',
+    );
+  }
+
+  if (
     statusCode === 401 ||
     statusCode === 403 ||
     normalizedMessage.includes('api key') ||
@@ -62,15 +82,6 @@ function handleEmailError(error: unknown): never {
     normalizedMessage.includes('unauthorized')
   ) {
     throw new EmailServiceError('Email service authentication failed.');
-  }
-
-  if (
-    statusCode === 400 ||
-    statusCode === 422 ||
-    normalizedMessage.includes('invalid') ||
-    normalizedMessage.includes('malformed')
-  ) {
-    throw new EmailValidationError('Invalid email format or configuration.');
   }
 
   throw new EmailError(message, 'UNKNOWN_ERROR', statusCode ?? 500);
@@ -135,7 +146,13 @@ export async function sendEmail({
 
     return { success: true, data };
   } catch (error) {
-    console.error('Failed to send email:', error);
+    console.error('Failed to send email:', {
+      name: error instanceof Error ? error.name : 'UnknownEmailError',
+      code: error instanceof EmailError ? error.code : undefined,
+      statusCode: error instanceof EmailError ? error.statusCode : undefined,
+      message:
+        error instanceof Error ? error.message : 'Unknown email delivery error',
+    });
     handleEmailError(error);
   }
 }
