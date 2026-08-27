@@ -127,7 +127,7 @@ export default function ColorMatcherPage() {
   return (
     <section className="pb-16">
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-300">Visual sprint</p>
           <h1 className="mt-2 text-4xl font-bold manrope text-white">Code &amp; Color Matcher</h1>
           <p className="mt-3 max-w-3xl text-lg text-slate-300">
@@ -206,7 +206,7 @@ export default function ColorMatcherPage() {
                 <p className="text-xs uppercase tracking-wide text-slate-400">Progress</p>
                 <div className="mt-2 h-2 rounded-full bg-slate-200">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all"
+                    className="h-full rounded-full bg-linear-to-r from-sky-400 to-emerald-400 transition-all"
                     style={{ width: `${(matchedIds.length / initialColorCodes.length) * 100}%` }}
                   />
                 </div>

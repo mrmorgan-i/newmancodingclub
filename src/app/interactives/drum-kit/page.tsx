@@ -105,7 +105,7 @@ export default function DrumKitPage() {
   return (
     <section className="pb-16">
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-pink-200">Live coding jam</p>
           <h1 className="mt-2 text-4xl font-bold manrope text-white">Interactive Web Drum Kit</h1>
           <p className="mt-3 max-w-3xl text-lg text-slate-300">
@@ -146,7 +146,7 @@ export default function DrumKitPage() {
               ))}
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
@@ -228,7 +228,7 @@ export default function DrumKitPage() {
                 <div className="mt-4 flex items-center gap-3">
                   <div className="h-3 flex-1 rounded-full bg-slate-200">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 transition-all"
+                      className="h-full rounded-full bg-linear-to-r from-sky-500 to-emerald-500 transition-all"
                       style={{ width: `${((bpm - 80) / 80) * 100}%` }}
                     />
                   </div>

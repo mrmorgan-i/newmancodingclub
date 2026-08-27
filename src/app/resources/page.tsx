@@ -16,7 +16,7 @@ const resourceGuides = [
 export default function ResourcesIndexPage() {
   return (
     <div className="bg-slate-50">
-      <section className="bg-gradient-to-b from-slate-100 to-white">
+      <section className="bg-linear-to-b from-slate-100 to-white">
         <Container className="py-20 lg:py-28">
           <p className="text-sm font-semibold uppercase tracking-wide text-primary">Resources</p>
           <h1 className="mt-4 text-4xl lg:text-5xl font-bold manrope text-foreground">

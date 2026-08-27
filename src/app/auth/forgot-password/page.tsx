@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
     setFeedback(null);
 
     try {
-      const { error } = await authClient.forgetPassword({
+      const { error } = await authClient.requestPasswordReset({
         email,
         redirectTo: '/auth/reset-password',
       });
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                 placeholder="you@example.com"
                 required
               />

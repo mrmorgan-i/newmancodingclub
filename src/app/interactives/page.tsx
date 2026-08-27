@@ -125,7 +125,7 @@ export default function InteractivesPage() {
   return (
     <div className="bg-slate-950 text-slate-100">
       <section className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.25),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.25),transparent_50%)]" />
         <Container className="relative z-10 py-20 lg:py-28">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-300">

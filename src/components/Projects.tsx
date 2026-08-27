@@ -10,7 +10,7 @@ const Projects: React.FC = () => {
             {projects.map((project, index) => (
                 <div
                     key={index}
-                    className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow"
                 >
                     <div className="relative h-48 w-full">
                         <Image
@@ -28,7 +28,7 @@ const Projects: React.FC = () => {
                                 alt={`${project.creator.name} avatar`}
                                 width={50}
                                 height={50}
-                                className="rounded-full shadow-sm"
+                                className="rounded-full shadow-xs"
                             />
                             <div className="ml-4">
                                 <h3 className="text-lg font-semibold text-primary">{project.creator.name}</h3>

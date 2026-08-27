@@ -111,7 +111,7 @@ export default function AIToolsPage() {
 
   const heroDescriptionClass = isDarkMode ? 'text-slate-200' : 'text-slate-600';
   const formFieldClasses = clsx(
-    'w-full rounded-2xl border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary transition-colors',
+    'w-full rounded-2xl border px-4 py-3 text-base focus:outline-hidden focus:ring-2 focus:ring-primary transition-colors',
     isDarkMode
       ? 'border-slate-700 bg-slate-900/70 text-white placeholder:text-slate-400 focus:border-primary'
       : 'border-slate-300 bg-white text-slate-900 placeholder:text-slate-500 focus:border-primary',
@@ -146,8 +146,8 @@ export default function AIToolsPage() {
         className={clsx(
           'relative isolate overflow-hidden transition-colors',
           isDarkMode
-            ? 'bg-gradient-to-b from-slate-900 to-slate-950'
-            : 'bg-gradient-to-b from-white via-slate-50 to-slate-100',
+            ? 'bg-linear-to-b from-slate-900 to-slate-950'
+            : 'bg-linear-to-b from-white via-slate-50 to-slate-100',
         )}
       >
         <div className="absolute inset-0 opacity-30" aria-hidden="true">
@@ -180,7 +180,7 @@ export default function AIToolsPage() {
             <button
               type="button"
               onClick={handleShareGuide}
-              className="rounded-full border border-primary/50 bg-primary/10 px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary/60"
+              className="rounded-full border border-primary/50 bg-primary/10 px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white focus:outline-hidden focus:ring-2 focus:ring-primary/60"
             >
               Share this guide
             </button>
@@ -188,7 +188,7 @@ export default function AIToolsPage() {
               type="button"
               onClick={toggleTheme}
               className={clsx(
-                'rounded-full px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary/60',
+                'rounded-full px-5 py-2 text-sm font-semibold transition focus:outline-hidden focus:ring-2 focus:ring-primary/60',
                 isDarkMode
                   ? 'border border-slate-700 text-slate-200 hover:bg-slate-900/50'
                   : 'border border-slate-300 text-slate-700 hover:bg-slate-100',
@@ -207,7 +207,7 @@ export default function AIToolsPage() {
             )}
           </div>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-[2fr,3fr]">
+          <div className="mt-10 grid gap-6 lg:grid-cols-[2fr_3fr]">
             <div className="space-y-3">
               <label
                 htmlFor="field-selector"

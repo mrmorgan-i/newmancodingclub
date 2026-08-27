@@ -133,7 +133,7 @@ const CTA: React.FC = () => {
         <section id="join" className="mt-10 mb-5 lg:my-20">
             <div className="relative h-full w-full z-10 mx-auto py-12 sm:py-20">
                 <div className="h-full w-full">
-                    <div className="rounded-3xl opacity-95 absolute inset-0 -z-10 h-full w-full bg-[#050a14] bg-[linear-gradient(to_right,#0a111f_1px,transparent_1px),linear-gradient(to_bottom,#0a111f_1px,transparent_1px)] bg-[size:6rem_4rem]">
+                    <div className="rounded-3xl opacity-95 absolute inset-0 -z-10 h-full w-full bg-[#050a14] bg-[linear-gradient(to_right,#0a111f_1px,transparent_1px),linear-gradient(to_bottom,#0a111f_1px,transparent_1px)] bg-size-[6rem_4rem]">
                         <div className="rounded-3xl absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_600px_at_50%_500px,#1e3a8a,transparent)]"></div>
                     </div>
 
@@ -142,7 +142,7 @@ const CTA: React.FC = () => {
 
                         <p className="mx-auto max-w-xl md:px-5 mb-6">{ctaDetails.subheading}</p>
 
-                        <div className="w-full max-w-md bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                        <div className="w-full max-w-md bg-white/10 backdrop-blur-xs rounded-lg p-6">
                             <h3 className="text-xl font-medium mb-4">Sign Up for Updates</h3>
                             
                             {submissionStatus === 'success' ? (
@@ -180,7 +180,7 @@ const CTA: React.FC = () => {
                                             required
                                             value={name}
                                             onChange={handleNameChange}
-                                            className="w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                            className="w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                                         />
                                     </div>
                                     <div>
@@ -191,7 +191,7 @@ const CTA: React.FC = () => {
                                             required
                                             value={email}
                                             onChange={handleEmailChange}
-                                            className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidEmail ? 'border-red-500' : 'border-white/30'} focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                                            className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidEmail ? 'border-red-500' : 'border-white/30'} focus:outline-hidden focus:ring-2 focus:ring-primary/50`}
                                         />
                                         {!isValidEmail && (
                                             <p className="mt-1 text-left text-red-400 text-sm">{emailErrorMessage}</p>
@@ -206,7 +206,7 @@ const CTA: React.FC = () => {
                                             onChange={handlePhoneChange}
                                             placeholder="Phone Number (For GroupMe)" 
                                             required
-                                            className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidPhone ? 'border-red-500' : 'border-white/30'} focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                                            className={`w-full px-4 py-3 rounded-md bg-white/20 text-white placeholder-white/60 border ${!isValidPhone ? 'border-red-500' : 'border-white/30'} focus:outline-hidden focus:ring-2 focus:ring-primary/50`}
                                         />
                                         {!isValidPhone && (
                                             <p className="mt-1 text-left text-red-400 text-sm">{phoneErrorMessage}</p>
@@ -218,7 +218,7 @@ const CTA: React.FC = () => {
                                             name="major"
                                             value={major}
                                             onChange={handleMajorChange}
-                                            className="w-full px-4 py-3 rounded-md bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                            className="w-full px-4 py-3 rounded-md bg-white/20 text-white border border-white/30 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                                         >
                                             <option value="" className="bg-gray-800">Your Major (Optional)</option>
                                             <option value="fa" className="bg-gray-800">Fine Arts</option>

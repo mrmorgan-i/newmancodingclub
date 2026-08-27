@@ -47,7 +47,7 @@ const BenefitSection: React.FC<Props> = ({ benefit, imageAtRight }: Props) => {
                 <div className={clsx("mt-5 lg:mt-0", { "lg:order-2": imageAtRight })}>
                     <div className={clsx("w-fit flex relative group", { "justify-start": imageAtRight, "justify-end": !imageAtRight })}>
                         {/* Add decorative elements */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition duration-1000"></div>
+                        <div className="absolute -inset-1 bg-linear-to-r from-primary/30 to-secondary/30 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition duration-1000"></div>
                         <div className="absolute inset-0 bg-white/50 rounded-3xl backdrop-blur-3xl"></div>
                         
                         {/* Image with enhancements */}

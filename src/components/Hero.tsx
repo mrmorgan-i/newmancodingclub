@@ -11,11 +11,11 @@ const Hero: React.FC = () => {
             className="relative flex items-center justify-center pb-0 pt-32 md:pt-40 px-5"
         >
             <div className="absolute left-0 top-0 bottom-0 -z-10 w-full">
-                <div className="absolute inset-0 h-full w-full bg-hero-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]">
+                <div className="absolute inset-0 h-full w-full bg-hero-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]">
                 </div>
             </div>
 
-            <div className="absolute left-0 right-0 bottom-0 backdrop-blur-[2px] h-40 bg-gradient-to-b from-transparent via-[rgba(233,238,255,0.5)] to-[rgba(202,208,230,0.5)]">
+            <div className="absolute left-0 right-0 bottom-0 backdrop-blur-[2px] h-40 bg-linear-to-b from-transparent via-[rgba(233,238,255,0.5)] to-[rgba(202,208,230,0.5)]">
             </div>
 
             <div className="text-center">
@@ -30,7 +30,7 @@ const Hero: React.FC = () => {
                     </Link>
                 </div>
                 <div className="relative mt-12 md:mt-16 mx-auto z-10 max-w-md">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-emerald-500/30 rounded-3xl blur-xl opacity-70 transform -rotate-3 scale-105"></div>
+                    <div className="absolute inset-0 bg-linear-to-r from-blue-500/30 to-emerald-500/30 rounded-3xl blur-xl opacity-70 transform -rotate-3 scale-105"></div>
                     <Image
                         src={heroDetails.centerImageSrc}
                         width={384}

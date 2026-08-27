@@ -51,6 +51,7 @@ export const account = pgTable(
   'account',
   {
     id: text('id').primaryKey(),
+    issuer: text('issuer').notNull(),
     accountId: text('accountId').notNull(),
     providerId: text('providerId').notNull(),
     userId: text('userId')
@@ -66,7 +67,13 @@ export const account = pgTable(
     createdAt: timestamp('createdAt').notNull().defaultNow(),
     updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   },
-  (table) => [index('account_user_id_idx').on(table.userId)]
+  (table) => [
+    uniqueIndex('account_issuer_account_id_uidx').on(
+      table.issuer,
+      table.accountId,
+    ),
+    index('account_user_id_idx').on(table.userId),
+  ]
 );
 
 export const pixelArt = pgTable('pixel_art', {
@@ -89,14 +96,18 @@ export const pixelArtRelations = relations(pixelArt, ({ one }) => ({
   }),
 }));
 
-export const verification = pgTable('verification', {
-  id: text('id').primaryKey(),
-  identifier: text('identifier').notNull(),
-  value: text('value').notNull(),
-  expiresAt: timestamp('expiresAt').notNull(),
-  createdAt: timestamp('createdAt').notNull().defaultNow(),
-  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
-});
+export const verification = pgTable(
+  'verification',
+  {
+    id: text('id').primaryKey(),
+    identifier: text('identifier').notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expiresAt').notNull(),
+    createdAt: timestamp('createdAt').notNull().defaultNow(),
+    updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  },
+  (table) => [index('verification_identifier_idx').on(table.identifier)],
+);
 
 // Relations
 export const userRelations = relations(user, ({ many }) => ({

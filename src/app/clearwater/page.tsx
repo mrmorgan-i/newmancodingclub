@@ -34,7 +34,7 @@ export default function ClearWaterPage() {
 
         <div className="flex flex-col md:flex-row gap-6">
           {/* Main Video Container */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6 flex-grow">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6 grow">
             {/* Video Player */}
             <div className="relative" style={{ paddingTop: "56.25%" /* 16:9 aspect ratio */ }}>
               {isLoading && (
@@ -95,7 +95,7 @@ export default function ClearWaterPage() {
                   onClick={() => handleVideoChange(index)}
                   className={`w-full text-left p-4 hover:bg-gray-50 border-b flex items-start gap-3 ${activeVideo === index ? 'bg-gray-100' : ''}`}
                 >
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="shrink-0 mt-1">
                     {activeVideo === index ? (
                       <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                         <FaPlay className="text-white w-3 h-3 ml-0.5" />

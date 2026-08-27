@@ -55,7 +55,7 @@ export default function UserGalleryPage() {
 
     return (
       <div
-        className="grid border-2 border-slate-200 shadow-sm"
+        className="grid border-2 border-slate-200 shadow-xs"
         style={{
           gridTemplateColumns: `repeat(${art.cols}, ${cellSize}px)`,
           gridTemplateRows: `repeat(${art.rows}, ${cellSize}px)`,
@@ -89,7 +89,7 @@ export default function UserGalleryPage() {
     return (
       <section className="pb-16">
         <div className="space-y-8">
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+          <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
             <Link
               href="/interactives/pixel-art/gallery"
               className="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition hover:text-white"
@@ -116,7 +116,7 @@ export default function UserGalleryPage() {
     <section className="pb-16">
       <PixelArtNav />
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <Link
             href="/interactives/pixel-art/gallery"
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition hover:text-white"

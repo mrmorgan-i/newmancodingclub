@@ -284,7 +284,7 @@ export default function PixelArtPage() {
     <section className="pb-16">
       <PixelArtNav />
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-fuchsia-200">Creative corner</p>
           <h1 className="mt-2 text-4xl font-bold manrope text-white">Pixel Art Lab</h1>
           <p className="mt-3 max-w-3xl text-lg text-slate-300">
@@ -340,7 +340,7 @@ export default function PixelArtPage() {
                       value={customRowsInput}
                       onChange={(event) => setCustomRowsInput(event.target.value)}
                       placeholder="Rows"
-                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/30"
                     />
                     <input
                       type="number"
@@ -349,7 +349,7 @@ export default function PixelArtPage() {
                       value={customColsInput}
                       onChange={(event) => setCustomColsInput(event.target.value)}
                       placeholder="Cols"
-                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/30"
                     />
                     <button
                       type="button"
@@ -500,7 +500,7 @@ export default function PixelArtPage() {
                   value={titleInput}
                   onChange={(event) => setTitleInput(event.target.value)}
                   placeholder="e.g. Campus skyline at night"
-                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
@@ -512,7 +512,7 @@ export default function PixelArtPage() {
                   onChange={(event) => setDescriptionInput(event.target.value)}
                   placeholder="What inspired this piece?"
                   rows={3}
-                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <label className="flex items-center gap-2 text-sm text-slate-600">
@@ -520,7 +520,7 @@ export default function PixelArtPage() {
                   type="checkbox"
                   checked={isPublicInput}
                   onChange={(event) => setIsPublicInput(event.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                  className="h-4 w-4 rounded-sm border-slate-300 text-primary focus:ring-primary"
                 />
                 Make this artwork visible in the public gallery.
               </label>

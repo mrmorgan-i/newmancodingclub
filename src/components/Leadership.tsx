@@ -16,7 +16,7 @@ const Leadership: React.FC = () => {
         {leaders.map((leader) => (
           <div
             key={leader.name}
-            className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0"
+            className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0"
           >
             <LeaderCard leader={leader} />
           </div>

@@ -92,10 +92,11 @@ This section provides technical information for future maintainers of the Newman
 ### Technology Stack
 
 This website is built with:
-- [Next.js 14](https://nextjs.org/) - React framework
+- [Next.js 16](https://nextjs.org/) and React 19 - Application framework
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [Framer Motion](https://www.framer.com/motion/) - Animation library
+- [Tailwind CSS 4](https://tailwindcss.com/) - Utility-first CSS framework
+- [Drizzle ORM](https://orm.drizzle.team/) - PostgreSQL schema and queries
+- [Better Auth](https://www.better-auth.com/) - Authentication
 - [React Icons](https://react-icons.github.io/react-icons/) - Icon library
 - [Headless UI](https://headlessui.com/) - Unstyled UI components
 
@@ -103,8 +104,8 @@ This website is built with:
 
 #### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18.0.0 or newer)
-- [npm](https://www.npmjs.com/) (v8.0.0 or newer) or [yarn](https://yarnpkg.com/) (v1.22.0 or newer)
+- [Bun](https://bun.com/) 1.4 or newer
+- [Node.js](https://nodejs.org/) 20.9 or newer for Next.js tooling and production parity
 - [Git](https://git-scm.com/)
 
 #### Setting Up the Development Environment
@@ -117,16 +118,12 @@ This website is built with:
 
 2. Install dependencies:
    ```bash
-   npm install
-   # or
-   yarn install
+   bun install
    ```
 
 3. Start the development server:
    ```bash
-   npm run dev
-   # or
-   yarn dev
+   bun dev
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -189,8 +186,7 @@ Make your code changes following the project's code style and structure.
 Before committing, ensure your changes work as expected:
 
 ```bash
-npm run build
-npm run start
+bun run check
 ```
 
 #### 4. Commit Your Changes
@@ -232,16 +228,12 @@ The website is deployed on [Vercel](https://vercel.com/). The deployment process
 
 ### Environment Variables
 
-If you need to add environment variables:
-
-1. Create a `.env.local` file in the root directory
-2. Add your variables in the format `KEY=value`
-3. Reference them in your code as `process.env.KEY`
-4. For production, add these variables in the Vercel project settings
+Copy `.env.example` to `.env.local` and provide the required values. Production
+values belong in the Vercel project settings and must not be committed.
 
 ### Troubleshooting
 
-- **Build errors**: Try `npm run clean` followed by `npm install` and `npm run build`
+- **Build errors**: Run `bun install`, confirm the required environment variables, then run `bun run build`
 - **Type errors**: Make sure all required types are defined in `src/types.ts`
 - **Styling issues**: Check Tailwind classes and consult the Tailwind CSS documentation
 

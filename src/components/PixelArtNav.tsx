@@ -26,7 +26,7 @@ export default function PixelArtNav() {
       await signOut();
       toast.success('Signed out successfully');
       router.push('/');
-    } catch (error) {
+    } catch {
       toast.error('Failed to sign out');
     }
   };
@@ -76,7 +76,7 @@ export default function PixelArtNav() {
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm"
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-xs"
           onClick={() => setIsOpen(false)}
         />
       )}

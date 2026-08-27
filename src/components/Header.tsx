@@ -17,8 +17,8 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="supports-[backdrop-filter]:bg-white/80 bg-white/95 backdrop-blur fixed top-0 left-0 right-0 z-50 w-full shadow-md">
-            <Container className="!px-0">
+        <header className="supports-backdrop-filter:bg-white/80 bg-white/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 w-full shadow-md">
+            <Container className="px-0!">
                 <nav className="mx-auto flex justify-between items-center py-2 px-5 md:py-6">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3">
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
                         <button
                             onClick={toggleMenu}
                             type="button"
-                            className="bg-primary text-white focus:outline-none rounded-full w-10 h-10 flex items-center justify-center"
+                            className="bg-primary text-white focus:outline-hidden rounded-full w-10 h-10 flex items-center justify-center"
                             aria-controls="mobile-menu"
                             aria-expanded={isOpen}
                         >

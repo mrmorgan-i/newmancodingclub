@@ -24,7 +24,7 @@ const EventCard: React.FC<Props> = ({ event, now, highlight }: Props) => {
         "w-full max-w-sm mx-auto rounded-xl border lg:max-w-full transition-all duration-200",
         {
             "shadow-lg": highlight,
-            "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 hover:shadow-md": isFlagshipEvent,
+            "bg-linear-to-br from-blue-50 to-indigo-50 border-blue-200 hover:shadow-md": isFlagshipEvent,
             "bg-white border-gray-200": !isFlagshipEvent
         }
     );

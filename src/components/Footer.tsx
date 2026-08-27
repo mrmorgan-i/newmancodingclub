@@ -15,8 +15,8 @@ const Footer: React.FC = () => {
                         <Image 
                             src="/images/logo.svg" 
                             alt="Newman Coding Club Logo" 
-                            width={20} 
-                            height={20} 
+                            width={28}
+                            height={28}
                             className="min-w-fit w-7 h-7" 
                         />
                         <h3 className="manrope text-xl font-semibold cursor-pointer">

@@ -137,7 +137,7 @@ export default function MemoryGamePage() {
   return (
     <section className="pb-16">
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-rose-200">Protocol practice</p>
           <h1 className="mt-2 text-4xl font-bold manrope text-white">HTTP Error Memory Lab</h1>
           <p className="mt-3 max-w-3xl text-lg text-slate-300">
@@ -234,7 +234,7 @@ export default function MemoryGamePage() {
                     <button
                       type="button"
                       key={card.uniqueId}
-                      className={`relative aspect-[3/4] rounded-xl border border-slate-200 transition-transform duration-300 ${
+                      className={`relative aspect-3/4 rounded-xl border border-slate-200 transition-transform duration-300 ${
                         isSolved ? 'opacity-60' : 'hover:-translate-y-1'
                       }`}
                       onClick={() => handleCardClick(index)}

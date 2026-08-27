@@ -1,36 +1,84 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #3e9ba2;
-  --secondary: #10b981;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-primary-accent: var(--primary-accent);
+  --color-foreground-accent: var(--foreground-accent);
+  --color-hero-background: var(--hero-background);
 
-  --primary-accent: #358a90;
-  --foreground-accent: #454545;
-  --hero-background: #F3F3F5;
-}
+  --animate-fade-in-up: fadeInUp 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-slide-in-left: slideInLeft 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-html {
-  @apply scroll-smooth;
-}
-
-body {
-  @apply text-lg;
-  
-  color: var(--foreground);
-  background: var(--background);
-  font-family: "Source Sans 3", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+  @keyframes slideInLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --primary: #3e9ba2;
+    --secondary: #10b981;
+
+    --primary-accent: #358a90;
+    --foreground-accent: #454545;
+    --hero-background: #f3f3f5;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply text-lg;
+
+    color: var(--foreground);
+    background: var(--background);
+    font-family: 'Source Sans 3', sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
 }
 
 .manrope {

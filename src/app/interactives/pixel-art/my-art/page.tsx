@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeftIcon, TrashIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
@@ -29,20 +29,7 @@ export default function MyArtPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [artToDelete, setArtToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Don't redirect while session is still loading
-    if (isPending) return;
-
-    // Only redirect if we're sure there's no session
-    if (!session?.user) {
-      router.push('/auth/signin?redirectTo=/interactives/pixel-art/my-art');
-      return;
-    }
-
-    fetchArtworks();
-  }, [session, isPending, router]);
-
-  const fetchArtworks = async () => {
+  const fetchArtworks = useCallback(async () => {
     try {
       const response = await fetch('/api/pixel-art/my-art');
       if (response.status === 401) {
@@ -59,7 +46,18 @@ export default function MyArtPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (isPending) return;
+
+    if (!session?.user) {
+      router.push('/auth/signin?redirectTo=/interactives/pixel-art/my-art');
+      return;
+    }
+
+    void fetchArtworks();
+  }, [fetchArtworks, isPending, router, session]);
 
   const openDeleteModal = (id: string) => {
     setArtToDelete(id);
@@ -102,7 +100,7 @@ export default function MyArtPage() {
 
     return (
       <div
-        className="grid border-2 border-slate-200 shadow-sm"
+        className="grid border-2 border-slate-200 shadow-xs"
         style={{
           gridTemplateColumns: `repeat(${art.cols}, ${cellSize}px)`,
           gridTemplateRows: `repeat(${art.rows}, ${cellSize}px)`,
@@ -141,7 +139,7 @@ export default function MyArtPage() {
     <section className="pb-16">
       <PixelArtNav />
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <Link
             href="/interactives/pixel-art"
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition hover:text-white"

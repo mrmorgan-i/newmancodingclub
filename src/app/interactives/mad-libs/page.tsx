@@ -141,7 +141,7 @@ export default function MadLibsPage() {
   return (
     <section className="pb-16">
       <div className="space-y-8">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
+        <div className="rounded-3xl border border-white/10 bg-linear-to-br from-slate-900 via-slate-900/80 to-slate-950 px-6 py-8 shadow-2xl shadow-primary/10">
           <p className="text-sm font-semibold uppercase tracking-wide text-emerald-200">Creative warm-up</p>
           <h1 className="mt-2 text-4xl font-bold manrope text-white">Coding Mad Libs</h1>
           <p className="mt-3 max-w-3xl text-lg text-slate-300">
@@ -220,7 +220,7 @@ export default function MadLibsPage() {
                         type="text"
                         value={inputs[placeholder.key] || ''}
                         onChange={(event) => handleChange(placeholder.key, event.target.value)}
-                        className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 shadow-xs focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/40"
                         placeholder={`Provide a ${placeholder.type}`}
                       />
                     </div>
