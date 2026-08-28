@@ -6,10 +6,8 @@ import { db } from '@/lib/db';
 import {
   adminInvitation,
   adminMembership,
-  auditLog,
   clubMember,
   contentEvent,
-  user,
 } from '@/lib/db/schema';
 import { requireAdmin } from '@/modules/admin/guards';
 
@@ -22,7 +20,6 @@ export async function getAdminOverview() {
     adminMemberCount,
     clubMemberCount,
     invitationCount,
-    activity,
     activeSeries,
   ] = await Promise.all([
       db
@@ -45,22 +42,11 @@ export async function getAdminOverview() {
         : Promise.resolve([{ count: 0 }]),
       db
         .select({
-          id: auditLog.id,
-          action: auditLog.action,
-          summary: auditLog.summary,
-          createdAt: auditLog.createdAt,
-          actorName: user.name,
-        })
-        .from(auditLog)
-        .leftJoin(user, eq(user.id, auditLog.actorUserId))
-        .orderBy(desc(auditLog.createdAt))
-        .limit(8),
-      db
-        .select({
           title: contentEvent.title,
           startDate: contentEvent.startDate,
           endDate: contentEvent.endDate,
-          dayOfWeek: contentEvent.dayOfWeek,
+          repeatInterval: contentEvent.repeatInterval,
+          daysOfWeek: contentEvent.daysOfWeek,
           startTime: contentEvent.startTime,
           endTime: contentEvent.endTime,
           location: contentEvent.location,
@@ -78,7 +64,6 @@ export async function getAdminOverview() {
 
   return {
     activeSeries: activeSeries[0] ?? null,
-    activity,
     counts: {
       archivedEvents:
         eventCounts.find((item) => item.status === 'archived')?.count ?? 0,

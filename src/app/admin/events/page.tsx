@@ -1,13 +1,17 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import {
   HiOutlineArchiveBox,
   HiOutlineCalendarDays,
   HiOutlineChevronDown,
   HiOutlineClock,
   HiOutlineMapPin,
+  HiOutlinePlus,
 } from 'react-icons/hi2';
 
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import EventForm, { type EditableEvent } from '@/components/admin/EventForm';
+import { formatWeekdayList, normalizeWeekdays } from '@/lib/recurrence';
 import { archiveEventAction } from '@/modules/events/actions';
 import { getAdminEvents } from '@/modules/events/queries';
 
@@ -21,44 +25,29 @@ export default async function AdminEventsPage() {
   const draftCount = events.filter((event) => event.status === 'draft').length;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <header className="grid gap-5 border-b border-[#d6e1df] pb-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-        <div>
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#2f7f85]">
-            Publishing / Events
-          </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-[-0.03em] text-[#172327]">
-            Semester schedule
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-[#607477]">
-            Manage weekly meeting runs and one-time events. Published changes clear
-            the public event cache immediately.
-          </p>
-        </div>
-        <div className="flex gap-6 font-mono text-xs uppercase tracking-[0.12em] text-[#6d8083]">
-          <span><strong className="mr-1 text-lg text-[#172327]">{publishedCount}</strong> live</span>
-          <span><strong className="mr-1 text-lg text-[#172327]">{draftCount}</strong> drafts</span>
-        </div>
-      </header>
+    <div className="mx-auto max-w-6xl space-y-8">
+      <AdminPageHeader
+        title="Events"
+        description="Create and update recurring series and one-time club events."
+        actions={
+          <Link
+            href="/admin/events/new"
+            className="inline-flex items-center gap-2 rounded-md bg-[#2f858b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#286f74] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f8f95]"
+          >
+            <HiOutlinePlus className="size-4" />
+            Add event
+          </Link>
+        }
+      />
 
-      <section id="new-event" className="scroll-mt-24 border border-[#d5e0de] bg-white">
-        <div className="border-b border-[#dce6e4] bg-[#edf5f4] px-5 py-4 sm:px-7">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#527174]">
-            New record
+      <section aria-labelledby="event-list-heading">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h2 id="event-list-heading" className="text-xl font-bold text-[#253639]">
+            All events
+          </h2>
+          <p className="text-sm text-[#6a7b7e]">
+            {publishedCount} published · {draftCount} {draftCount === 1 ? 'draft' : 'drafts'}
           </p>
-          <h2 className="mt-1 text-xl font-bold">Add an event</h2>
-        </div>
-        <div className="p-5 sm:p-7">
-          <EventForm onSuccessReset />
-        </div>
-      </section>
-
-      <section>
-        <div className="mb-4">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#718689]">
-            Schedule records
-          </p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight">All events</h2>
         </div>
 
         {events.length ? (
@@ -68,10 +57,10 @@ export default async function AdminEventsPage() {
             ))}
           </div>
         ) : (
-          <div className="border border-dashed border-[#bdcecb] bg-white px-6 py-12 text-center">
+          <div className="rounded-lg border border-dashed border-[#bdcecb] bg-white px-6 py-12 text-center">
             <HiOutlineCalendarDays className="mx-auto size-8 text-[#3e9ba2]" />
             <h3 className="mt-3 font-bold">No events yet</h3>
-            <p className="mt-1 text-sm text-[#6a7d80]">Create the first schedule record above.</p>
+            <p className="mt-1 text-sm text-[#6a7d80]">Add the first event to get started.</p>
           </div>
         )}
       </section>
@@ -81,45 +70,45 @@ export default async function AdminEventsPage() {
 
 function EventRecord({ event }: { event: EditableEvent }) {
   return (
-    <details className="group border border-[#d5e0de] bg-white open:shadow-[0_16px_40px_rgba(37,61,65,0.08)]">
-      <summary className="grid cursor-pointer list-none gap-4 p-5 marker:hidden sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden">
+    <details className="group rounded-lg border border-[#d8e2e0] bg-white open:shadow-sm">
+      <summary className="grid cursor-pointer list-none gap-4 rounded-lg p-5 marker:hidden sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center [&::-webkit-details-marker]:hidden">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h3 className="truncate text-lg font-bold text-[#25383b]">{event.title}</h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-base font-bold text-[#25383b] sm:text-lg">{event.title}</h3>
             <StatusBadge status={event.status} />
-            <span className="rounded-full bg-[#eef4f3] px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-[#61777a]">
-              {event.kind === 'weekly' ? 'Weekly' : 'One-time'}
+            <span className="rounded-full bg-[#eef3f2] px-2.5 py-1 text-xs font-semibold text-[#617477]">
+              {event.kind === 'weekly' ? 'Series' : 'One-time'}
             </span>
           </div>
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#6a7c7f]">
-            <span className="inline-flex items-center gap-1.5">
-              <HiOutlineCalendarDays className="size-4 text-[#3e9ba2]" />
+          <div className="mt-3 grid gap-2 text-sm text-[#65777a] md:grid-cols-3">
+            <span className="inline-flex min-w-0 items-start gap-1.5">
+              <HiOutlineCalendarDays className="mt-0.5 size-4 shrink-0 text-[#3e9ba2]" />
               {formatSchedule(event)}
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <HiOutlineClock className="size-4 text-[#3e9ba2]" />
+            <span className="inline-flex items-start gap-1.5">
+              <HiOutlineClock className="mt-0.5 size-4 shrink-0 text-[#3e9ba2]" />
               {formatClock(event.startTime)}–{formatClock(event.endTime)}
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <HiOutlineMapPin className="size-4 text-[#3e9ba2]" />
-              {event.location}
+            <span className="inline-flex min-w-0 items-start gap-1.5">
+              <HiOutlineMapPin className="mt-0.5 size-4 shrink-0 text-[#3e9ba2]" />
+              <span className="truncate">{event.location}</span>
             </span>
           </div>
         </div>
-        <span className="inline-flex items-center justify-self-start gap-2 text-sm font-bold text-[#2f7f85] sm:justify-self-end">
-          Edit details
-          <HiOutlineChevronDown className="size-4 transition group-open:rotate-180" />
+        <span className="inline-flex items-center justify-self-start gap-2 text-sm font-semibold text-[#287c82] sm:justify-self-end">
+          Edit
+          <HiOutlineChevronDown className="size-4 transition group-open:rotate-180 motion-reduce:transition-none" />
         </span>
       </summary>
 
-      <div className="border-t border-[#dce6e4] bg-[#fbfdfc] p-5 sm:p-7">
+      <div className="border-t border-[#e0e8e6] bg-[#fbfcfc] p-5 sm:p-6">
         <EventForm event={event} />
         {event.status !== 'archived' && (
           <form action={archiveEventAction} className="mt-7 border-t border-[#e0e8e6] pt-5">
             <input type="hidden" name="id" value={event.id} />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#8d5149] transition hover:text-[#6f332c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a84338]"
+              className="inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-[#8d5149] hover:bg-[#fbefed] hover:text-[#6f332c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a84338]"
             >
               <HiOutlineArchiveBox className="size-4" />
               Archive event
@@ -139,8 +128,8 @@ function StatusBadge({ status }: { status: EditableEvent['status'] }) {
   }[status];
 
   return (
-    <span className={`rounded-full px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] ${classes}`}>
-      {status}
+    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${classes}`}>
+      {status[0]?.toUpperCase()}{status.slice(1)}
     </span>
   );
 }
@@ -157,7 +146,8 @@ function toEditableEvent(
     date: event.date,
     startDate: event.startDate,
     endDate: event.endDate,
-    dayOfWeek: event.dayOfWeek,
+    repeatInterval: event.repeatInterval,
+    daysOfWeek: event.daysOfWeek,
     startTime: event.startTime,
     endTime: event.endTime,
     timeZone: event.timeZone,
@@ -171,18 +161,20 @@ function toEditableEvent(
 
 function formatSchedule(event: EditableEvent): string {
   if (event.kind === 'weekly') {
-    const weekday = WEEKDAYS[event.dayOfWeek ?? 0];
-    return `${weekday}s, ${formatDate(event.startDate)}–${formatDate(event.endDate)}`;
+    const cadence =
+      event.repeatInterval === 1 ? 'Weekly' : `Every ${event.repeatInterval} weeks`;
+    const weekdays = formatWeekdayList(normalizeWeekdays(event.daysOfWeek));
+    return `${cadence} · ${weekdays} · ${formatDate(event.startDate, false)}–${formatDate(event.endDate)}`;
   }
-  return event.date ? formatDate(event.date) : 'TBD';
+  return event.date ? formatDate(event.date) : 'Date not set';
 }
 
-function formatDate(value: string | null): string {
-  if (!value) return 'TBD';
+function formatDate(value: string | null, includeYear = true): string {
+  if (!value) return 'Date not set';
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
+    year: includeYear ? 'numeric' : undefined,
     timeZone: 'UTC',
   }).format(new Date(`${value}T00:00:00Z`));
 }
@@ -192,5 +184,3 @@ function formatClock(value: string): string {
   const hour = Number(hourValue);
   return `${hour % 12 || 12}:${minutes} ${hour >= 12 ? 'PM' : 'AM'}`;
 }
-
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

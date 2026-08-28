@@ -15,9 +15,9 @@ const Footer: React.FC = () => {
                         <Image 
                             src="/images/logo.svg" 
                             alt="Newman Coding Club Logo" 
-                            width={28}
+                            width={59}
                             height={28}
-                            className="min-w-fit w-7 h-7" 
+                            className="h-7 w-auto"
                         />
                         <h3 className="manrope text-xl font-semibold cursor-pointer">
                             {siteDetails.siteName}
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
                 <div className="flex flex-wrap items-center justify-center mt-4">
                     <p className="text-sm font-bold mr-2 w-full text-center md:w-auto">Powered by</p>
                     <div className="flex flex-wrap items-center justify-center gap-4 mt-2 md:mt-0">
-                        <a href="https://newmanu.edu" target="_blank" rel="noopener noreferrer" className="inline-block">
+                        <a href="https://newmanu.edu" target="_blank" rel="noopener noreferrer" aria-label="Newman University" className="inline-block">
                             <Image 
                                 src="/images/newman-university-logo.png" 
                                 alt="Newman University" 
@@ -85,7 +85,7 @@ const Footer: React.FC = () => {
                                 className="h-6 w-32 md:h-8 md:w-40"
                             />
                         </a>
-                        <a href="https://devict.org" target="_blank" rel="noopener noreferrer" className="inline-block">
+                        <a href="https://devict.org" target="_blank" rel="noopener noreferrer" aria-label="devICT" className="inline-block">
                             <Image 
                                 src="/images/devict-logo.png"
                                 alt="devICT"

@@ -22,6 +22,10 @@ export const contentStatusEnum = pgEnum('content_status', [
   'archived',
 ]);
 export const eventKindEnum = pgEnum('event_kind', ['single', 'weekly']);
+export const leadershipKindEnum = pgEnum('leadership_kind', [
+  'officer',
+  'advisor',
+]);
 
 // User table
 export const user = pgTable(
@@ -173,6 +177,68 @@ export const auditLog = pgTable(
   ],
 );
 
+export const storageObject = pgTable(
+  'storage_object',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    objectKey: text('objectKey').notNull(),
+    publicUrl: text('publicUrl').notNull(),
+    originalFilename: text('originalFilename').notNull(),
+    mimeType: text('mimeType').notNull(),
+    byteSize: integer('byteSize').notNull(),
+    fileHash: text('fileHash'),
+    endpoint: text('endpoint').notNull(),
+    uploadedByUserId: text('uploadedByUserId').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    completedAt: timestamp('completedAt').notNull().defaultNow(),
+    deletedAt: timestamp('deletedAt'),
+    createdAt: timestamp('createdAt').notNull().defaultNow(),
+    updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('storage_object_object_key_uidx').on(table.objectKey),
+    index('storage_object_uploaded_by_idx').on(table.uploadedByUserId),
+    index('storage_object_endpoint_idx').on(table.endpoint),
+    check('storage_object_byte_size_check', sql`${table.byteSize} >= 0`),
+  ],
+);
+
+export const leadershipMember = pgTable(
+  'leadership_member',
+  {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    name: text('name').notNull(),
+    role: text('role').notNull(),
+    kind: leadershipKindEnum('kind').notNull().default('officer'),
+    bio: text('bio').notNull(),
+    email: text('email'),
+    imageId: uuid('imageId').references(() => storageObject.id, {
+      onDelete: 'set null',
+    }),
+    status: contentStatusEnum('status').notNull().default('draft'),
+    sortOrder: integer('sortOrder').notNull().default(0),
+    termStart: date('termStart'),
+    termEnd: date('termEnd'),
+    createdByUserId: text('createdByUserId').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    updatedByUserId: text('updatedByUserId').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('createdAt').notNull().defaultNow(),
+    updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  },
+  (table) => [
+    index('leadership_member_status_kind_idx').on(table.status, table.kind),
+    index('leadership_member_sort_order_idx').on(table.sortOrder),
+    check(
+      'leadership_member_term_range_check',
+      sql`${table.termStart} IS NULL OR ${table.termEnd} IS NULL OR ${table.termEnd} >= ${table.termStart}`,
+    ),
+  ],
+);
+
 export const contentEvent = pgTable(
   'content_event',
   {
@@ -184,7 +250,8 @@ export const contentEvent = pgTable(
     date: date('date'),
     startDate: date('startDate'),
     endDate: date('endDate'),
-    dayOfWeek: integer('dayOfWeek'),
+    repeatInterval: integer('repeatInterval').notNull().default(1),
+    daysOfWeek: jsonb('daysOfWeek').$type<number[]>().notNull().default([]),
     startTime: time('startTime').notNull(),
     endTime: time('endTime').notNull(),
     timeZone: text('timeZone').notNull().default('America/Chicago'),
@@ -212,11 +279,7 @@ export const contentEvent = pgTable(
     ),
     check(
       'content_event_weekly_schedule_check',
-      sql`${table.kind} = 'single' OR (${table.startDate} IS NOT NULL AND ${table.endDate} IS NOT NULL AND ${table.dayOfWeek} BETWEEN 0 AND 6 AND ${table.endDate} >= ${table.startDate})`,
-    ),
-    check(
-      'content_event_weekly_day_check',
-      sql`${table.kind} = 'single' OR (EXTRACT(DOW FROM ${table.startDate})::integer = ${table.dayOfWeek} AND EXTRACT(DOW FROM ${table.endDate})::integer = ${table.dayOfWeek})`,
+      sql`${table.kind} = 'single' OR (${table.startDate} IS NOT NULL AND ${table.endDate} IS NOT NULL AND ${table.endDate} >= ${table.startDate} AND ${table.repeatInterval} BETWEEN 1 AND 52 AND jsonb_typeof(${table.daysOfWeek}) = 'array' AND jsonb_array_length(${table.daysOfWeek}) BETWEEN 1 AND 7 AND ${table.daysOfWeek} <@ '[0, 1, 2, 3, 4, 5, 6]'::jsonb)`,
     ),
   ],
 );

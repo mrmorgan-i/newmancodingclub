@@ -5,20 +5,11 @@ import { unstable_cache } from 'next/cache';
 
 import { db } from '@/lib/db';
 import { contentEvent } from '@/lib/db/schema';
+import { formatRecurrenceLabel, normalizeWeekdays } from '@/lib/recurrence';
 import { requireAdmin } from '@/modules/admin/guards';
-import type { IEvent, ISingleEvent, Weekday } from '@/types';
+import type { IEvent, ISingleEvent } from '@/types';
 
 export const EVENTS_CACHE_TAG = 'content:events';
-
-const WEEKDAYS = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-] as const;
 
 export const getPublishedEvents = unstable_cache(
   async (): Promise<IEvent[]> => {
@@ -30,7 +21,7 @@ export const getPublishedEvents = unstable_cache(
 
     return rows.map(toPublicEvent);
   },
-  ['published-events-v2'],
+  ['published-events-v3'],
   {
     tags: [EVENTS_CACHE_TAG],
     revalidate: 60 * 60,
@@ -60,14 +51,15 @@ function toPublicEvent(row: typeof contentEvent.$inferSelect): IEvent {
     isActive: true,
   };
 
-  if (row.kind === 'weekly' && row.startDate && row.endDate && row.dayOfWeek !== null) {
-    const dayOfWeek = row.dayOfWeek as Weekday;
+  if (row.kind === 'weekly' && row.startDate && row.endDate) {
+    const daysOfWeek = normalizeWeekdays(row.daysOfWeek);
     return {
       ...base,
-      date: `Every ${WEEKDAYS[dayOfWeek]}`,
+      date: formatRecurrenceLabel(row.repeatInterval, daysOfWeek),
       isRecurring: true,
       recurrencePattern: 'weekly',
-      dayOfWeek,
+      repeatInterval: row.repeatInterval,
+      daysOfWeek,
       startDate: row.startDate,
       endDate: row.endDate,
       timeZone: row.timeZone,

@@ -16,7 +16,8 @@ export interface EditableEvent {
   date: string | null;
   startDate: string | null;
   endDate: string | null;
-  dayOfWeek: number | null;
+  repeatInterval: number;
+  daysOfWeek: number[];
   startTime: string;
   endTime: string;
   timeZone: string;
@@ -77,11 +78,11 @@ export default function EventForm({
 
         <fieldset className="sm:col-span-2">
           <legend className={labelClass}>Schedule type</legend>
-          <div className="mt-2 grid grid-cols-2 border border-[#cbd9d7] bg-[#f4f8f7] p-1">
+          <div className="mt-2 grid grid-cols-2 rounded-md border border-[#cbd9d7] bg-[#f4f8f7] p-1">
             {(['single', 'weekly'] as const).map((value) => (
               <label
                 key={value}
-                className={`cursor-pointer px-4 py-2.5 text-center text-sm font-bold transition ${
+                className={`cursor-pointer rounded-sm px-4 py-2.5 text-center text-sm font-semibold has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#2f8f95] ${
                   kind === value
                     ? 'bg-[#172327] text-white shadow-sm'
                     : 'text-[#607477] hover:text-[#172327]'
@@ -95,19 +96,19 @@ export default function EventForm({
                   checked={kind === value}
                   onChange={() => setKind(value)}
                 />
-                {value === 'single' ? 'One-time event' : 'Weekly series'}
+                {value === 'single' ? 'One-time event' : 'Recurring series'}
               </label>
             ))}
           </div>
         </fieldset>
 
         {kind === 'single' ? (
-          <Field label="Date" hint="Leave blank to show TBD." error={state.fieldErrors?.date}>
+        <Field label="Date" hint="Optional" error={state.fieldErrors?.date}>
             <input name="date" type="date" defaultValue={event?.date ?? ''} className={inputClass} />
           </Field>
         ) : (
           <>
-            <Field label="First meeting" error={state.fieldErrors?.startDate}>
+            <Field label="Series starts" error={state.fieldErrors?.startDate}>
               <input
                 name="startDate"
                 type="date"
@@ -116,7 +117,7 @@ export default function EventForm({
                 required
               />
             </Field>
-            <Field label="Final meeting" error={state.fieldErrors?.endDate}>
+            <Field label="Series ends" error={state.fieldErrors?.endDate}>
               <input
                 name="endDate"
                 type="date"
@@ -125,19 +126,52 @@ export default function EventForm({
                 required
               />
             </Field>
-            <Field label="Meeting day" error={state.fieldErrors?.dayOfWeek}>
-              <select
-                name="dayOfWeek"
-                defaultValue={event?.dayOfWeek ?? 4}
-                className={inputClass}
-              >
-                {WEEKDAYS.map((day, index) => (
-                  <option key={day} value={index}>
-                    {day}
-                  </option>
-                ))}
-              </select>
+            <Field
+              label="Repeat every"
+              hint="In weeks"
+              error={state.fieldErrors?.repeatInterval}
+            >
+              <div className="relative">
+                <input
+                  name="repeatInterval"
+                  type="number"
+                  min="1"
+                  max="52"
+                  defaultValue={event?.repeatInterval ?? 1}
+                  className={`${inputClass} pr-20`}
+                  required
+                />
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-[#6b7d80]">
+                  weeks
+                </span>
+              </div>
             </Field>
+
+            <fieldset className="sm:col-span-2">
+              <legend className={labelClass}>Meeting days</legend>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+                {WEEKDAYS.map((day, index) => (
+                  <label
+                    key={day}
+                    className="flex cursor-pointer items-center gap-2 rounded-md border border-[#c8d7d5] bg-white px-3 py-2.5 text-sm font-semibold text-[#42575a] has-checked:border-[#63a8ab] has-checked:bg-[#eaf4f3] has-checked:text-[#246f74] has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#2f8f95]"
+                  >
+                    <input
+                      type="checkbox"
+                      name="daysOfWeek"
+                      value={index}
+                      defaultChecked={event ? event.daysOfWeek.includes(index) : index === 4}
+                      className="size-4 accent-[#2f858b]"
+                    />
+                    <span>{day.slice(0, 3)}</span>
+                  </label>
+                ))}
+              </div>
+              {state.fieldErrors?.daysOfWeek?.map((message) => (
+                <span key={message} className="mt-1.5 block text-xs font-semibold text-[#a84338]">
+                  {message}
+                </span>
+              ))}
+            </fieldset>
           </>
         )}
 
@@ -184,7 +218,7 @@ export default function EventForm({
         <Field
           className="sm:col-span-2"
           label="Registration link"
-          hint="Optional. Include https://"
+          hint="Optional; include https://"
           error={state.fieldErrors?.registrationUrl}
         >
           <input
@@ -199,7 +233,7 @@ export default function EventForm({
         <Field
           className="sm:col-span-2"
           label="Tags"
-          hint="Comma-separated, up to 12."
+          hint="Separate tags with commas"
           error={state.fieldErrors?.tags}
         >
           <input
@@ -213,7 +247,7 @@ export default function EventForm({
 
         <Field
           label="Display order"
-          hint="Lower numbers win when dates match."
+          hint="Lower numbers appear first when dates match"
           error={state.fieldErrors?.sortOrder}
         >
           <input
@@ -226,7 +260,7 @@ export default function EventForm({
           />
         </Field>
 
-        <label className="flex items-start gap-3 border border-[#c8d7d5] bg-[#f4f8f7] p-4 sm:self-end">
+        <label className="flex items-start gap-3 rounded-md border border-[#c8d7d5] bg-[#f4f8f7] p-4 sm:self-end">
           <input
             name="isFeatured"
             type="checkbox"
@@ -234,9 +268,9 @@ export default function EventForm({
             className="mt-0.5 size-4 accent-[#3e9ba2]"
           />
           <span>
-            <span className="block text-sm font-bold text-[#31474a]">Featured event</span>
+            <span className="block text-sm font-semibold text-[#31474a]">Featured event</span>
             <span className="mt-0.5 block text-xs leading-5 text-[#748689]">
-              Gives this event the emphasized public card treatment.
+              Show this event more prominently on the public site.
             </span>
           </span>
         </label>
@@ -246,7 +280,7 @@ export default function EventForm({
 
       {state.status !== 'idle' && (
         <div
-          className={`flex items-start gap-2 border px-4 py-3 text-sm ${
+          className={`flex items-start gap-2 rounded-md border px-4 py-3 text-sm ${
             state.status === 'success'
               ? 'border-[#b9dcd7] bg-[#edf8f6] text-[#246f70]'
               : 'border-[#efc7c1] bg-[#fff4f2] text-[#9a4036]'
@@ -302,7 +336,7 @@ function SubmitButton({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-full bg-[#3e9ba2] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#327f85] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3e9ba2] disabled:cursor-wait disabled:opacity-60"
+      className="rounded-md bg-[#2f858b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#286f74] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3e9ba2] disabled:cursor-wait disabled:opacity-60"
     >
       {pending ? 'Saving…' : label}
     </button>
@@ -310,8 +344,8 @@ function SubmitButton({ label }: { label: string }) {
 }
 
 const inputClass =
-  'w-full border border-[#c8d7d5] bg-white px-3.5 py-2.5 text-sm text-[#172327] outline-none transition placeholder:text-[#9aa8aa] focus:border-[#3e9ba2] focus:ring-2 focus:ring-[#3e9ba2]/15';
-const labelClass = 'text-sm font-bold text-[#31474a]';
+  'w-full rounded-md border border-[#c8d7d5] bg-white px-3.5 py-2.5 text-sm text-[#172327] outline-none placeholder:text-[#9aa8aa] focus:border-[#3e9ba2] focus:ring-2 focus:ring-[#3e9ba2]/15';
+const labelClass = 'text-sm font-semibold text-[#31474a]';
 const WEEKDAYS = [
   'Sunday',
   'Monday',

@@ -183,7 +183,9 @@ const CTA: React.FC = () => {
                                     onSubmit={handleSubmit}
                                 >
                                     <div>
+                                        <label htmlFor="join-name" className="sr-only">Name</label>
                                         <input 
+                                            id="join-name"
                                             type="text" 
                                             name="name"
                                             placeholder="Name" 
@@ -194,7 +196,9 @@ const CTA: React.FC = () => {
                                         />
                                     </div>
                                     <div>
+                                        <label htmlFor="join-email" className="sr-only">Newman email</label>
                                         <input 
+                                            id="join-email"
                                             type="email" 
                                             name="email"
                                             placeholder="Newman Email (xyz@newmanu.edu)" 
@@ -209,7 +213,9 @@ const CTA: React.FC = () => {
                                         <p className="mt-1 text-left text-white/60 text-xs">Help us fight bots! Please use your Newman University email address</p>
                                     </div>
                                     <div>
+                                        <label htmlFor="join-phone" className="sr-only">Phone number</label>
                                         <input 
+                                            id="join-phone"
                                             type="tel" 
                                             name="phone"
                                             value={phone}
@@ -224,7 +230,9 @@ const CTA: React.FC = () => {
                                         <p className="mt-1 text-left text-white/60 text-xs">Please enter a 10-digit phone number to be added to our GroupMe</p>
                                     </div>
                                     <div>
+                                        <label htmlFor="join-major" className="sr-only">Major</label>
                                         <select 
+                                            id="join-major"
                                             name="major"
                                             value={major}
                                             onChange={handleMajorChange}

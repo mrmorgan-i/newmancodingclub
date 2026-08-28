@@ -86,18 +86,41 @@ export function getNextOccurrence(event: IEvent, now: Date = new Date()): Date |
     const today = parseDateOnly(dateOnlyInTimeZone(now, event.timeZone));
     if (!startDate || !endDate || !today || startDate > endDate) return null;
 
-    const searchStart = today < startDate ? startDate : today;
-    const dayOffset = (event.dayOfWeek - searchStart.getUTCDay() + 7) % 7;
-    let nextOccurrence = addUtcDays(searchStart, dayOffset);
+    let candidate = today < startDate ? startDate : today;
 
-    if (
-        nextOccurrence.getTime() === today.getTime() &&
-        hasTodaysOccurrenceEnded(event, now)
-    ) {
-        nextOccurrence = addUtcDays(nextOccurrence, 7);
+    while (candidate <= endDate) {
+        if (
+            isScheduledOccurrence(event, candidate, startDate) &&
+            !(
+                candidate.getTime() === today.getTime() &&
+                hasTodaysOccurrenceEnded(event, now)
+            )
+        ) {
+            return candidate;
+        }
+
+        candidate = addUtcDays(candidate, 1);
     }
 
-    return nextOccurrence <= endDate ? nextOccurrence : null;
+    return null;
+}
+
+function isScheduledOccurrence(
+    event: IRecurringEvent,
+    candidate: Date,
+    startDate: Date,
+): boolean {
+    if (!event.daysOfWeek.includes(candidate.getUTCDay() as IRecurringEvent['daysOfWeek'][number])) {
+        return false;
+    }
+
+    const anchorWeek = addUtcDays(startDate, -startDate.getUTCDay());
+    const candidateWeek = addUtcDays(candidate, -candidate.getUTCDay());
+    const weeksSinceStart = Math.floor(
+        (candidateWeek.getTime() - anchorWeek.getTime()) / (7 * 24 * 60 * 60 * 1000),
+    );
+
+    return weeksSinceStart >= 0 && weeksSinceStart % event.repeatInterval === 0;
 }
 
 export function getDisplayDate(event: IEvent, now: Date = new Date()): string {
@@ -192,8 +215,8 @@ export function hasEventPassed(event: IEvent, now: Date = new Date()): boolean {
     const today = dateOnlyInTimeZone(now, getEventTimeZone(event));
 
     if (event.isRecurring) {
-        if (today > event.endDate) return true;
-        return today === event.endDate && hasTodaysOccurrenceEnded(event, now);
+        if (today < event.startDate) return false;
+        return getNextOccurrence(event, now) === null;
     }
 
     return parseDateOnly(event.date) !== null && event.date < today;

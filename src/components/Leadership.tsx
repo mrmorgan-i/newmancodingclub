@@ -1,114 +1,88 @@
-"use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { FaEnvelope, FaUser } from "react-icons/fa";
-import { leaders } from "@/data/leadership";
-import { advisor } from "@/data/advisor";
-import { ILeader, IAdvisor } from "@/types";
+import Image from 'next/image';
+import { HiOutlineEnvelope, HiOutlineUser } from 'react-icons/hi2';
 
-const Leadership: React.FC = () => {
+import { getPublishedLeadership } from '@/modules/leadership/queries';
+import type { ILeadershipMember } from '@/types';
+
+export default async function Leadership() {
+  const leadership = await getPublishedLeadership();
+  const officers = leadership.filter((member) => member.kind === 'officer');
+  const advisors = leadership.filter((member) => member.kind === 'advisor');
+
+  if (!leadership.length) {
+    return (
+      <p className="rounded-lg border border-gray-200 bg-white px-6 py-10 text-center text-foreground-accent">
+        Leadership information will be available soon.
+      </p>
+    );
+  }
+
   return (
-    <div>
-      <h3 className="text-2xl font-semibold mb-8 text-center">
-        Student Officers
+    <div className="space-y-14">
+      {officers.length > 0 && (
+        <LeadershipGroup title="Student Officers" members={officers} />
+      )}
+      {advisors.length > 0 && (
+        <LeadershipGroup title="Faculty Advisors" members={advisors} />
+      )}
+    </div>
+  );
+}
+
+function LeadershipGroup({
+  members,
+  title,
+}: {
+  members: ILeadershipMember[];
+  title: string;
+}) {
+  const headingId = `leadership-${title.toLowerCase().replaceAll(' ', '-')}`;
+
+  return (
+    <section aria-labelledby={headingId}>
+      <h3 id={headingId} className="mb-7 text-center text-2xl font-semibold">
+        {title}
       </h3>
-      <div className="flex flex-wrap justify-center gap-10 md:gap-6 mb-16">
-        {leaders.map((leader) => (
-          <div
-            key={leader.name}
-            className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0"
+      <div
+        className={`grid gap-6 sm:grid-cols-2 ${
+          members.length === 2 ? 'mx-auto max-w-4xl' : 'lg:grid-cols-3'
+        }`}
+      >
+        {members.map((member) => (
+          <article
+            key={member.id}
+            className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm"
           >
-            <LeaderCard leader={leader} />
-          </div>
+            <div className="relative mx-auto mb-4 size-32 overflow-hidden rounded-full border-4 border-primary/15 bg-primary/10">
+              {member.imageUrl ? (
+                <Image
+                  src={member.imageUrl}
+                  alt={`${member.name}, ${member.role}`}
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 grid place-items-center text-primary">
+                  <HiOutlineUser className="size-14" />
+                </div>
+              )}
+            </div>
+            <h4 className="text-xl font-semibold text-foreground">{member.name}</h4>
+            <p className="mt-1 font-medium text-primary">{member.role}</p>
+            <p className="mt-3 text-sm leading-6 text-foreground-accent">{member.bio}</p>
+            {member.email && (
+              <a
+                href={`mailto:${member.email}`}
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                <HiOutlineEnvelope className="size-4" />
+                Contact
+              </a>
+            )}
+          </article>
         ))}
       </div>
-
-      <h3 className="text-2xl font-semibold mb-8 text-center">
-        Faculty Advisors
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto">
-        {advisor.map((advisor) => (
-          <AdvisorCard key={advisor.name} advisor={advisor} />
-        ))}
-      </div>
-    </div>
+    </section>
   );
-};
-
-// Separate component for each leader card
-const LeaderCard = ({ leader }: { leader: ILeader }) => {
-  const [imageError, setImageError] = useState(false);
-
-  return (
-    <div className="flex flex-col items-center text-center bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 transform hover:-translate-y-1">
-      <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden bg-gray-200 border-4 border-primary/20">
-        {!imageError ? (
-          <Image
-            src={leader.avatar}
-            alt={`${leader.name} - ${leader.role}`}
-            className="object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 128px"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-primary/10 text-primary">
-            <FaUser className="w-16 h-16" />
-          </div>
-        )}
-      </div>
-
-      <h3 className="text-xl font-semibold text-foreground">{leader.name}</h3>
-      <p className="text-primary font-medium mb-3">{leader.role}</p>
-      <p className="text-foreground-accent text-sm mb-4">{leader.bio}</p>
-
-      <a
-        href={`mailto:${leader.contact}`}
-        className="inline-flex items-center text-sm text-gray-600 hover:text-primary transition-colors duration-300"
-      >
-        <FaEnvelope className="mr-2" />
-        Contact
-      </a>
-    </div>
-  );
-};
-
-// Advisor
-const AdvisorCard = ({ advisor }: { advisor: IAdvisor }) => {
-  const [imageError, setImageError] = useState(false);
-
-  return (
-    <div className="flex flex-col items-center text-center bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 transform hover:-translate-y-1">
-      <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden bg-gray-200 border-4 border-secondary/20">
-        {!imageError ? (
-          <Image
-            src={advisor.avatar}
-            alt={`${advisor.name} - ${advisor.role}`}
-            className="object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 128px"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-secondary/10 text-secondary">
-            <FaUser className="w-16 h-16" />
-          </div>
-        )}
-      </div>
-
-      <h3 className="text-xl font-semibold text-foreground">{advisor.name}</h3>
-      <p className="text-secondary font-medium mb-3">{advisor.role}</p>
-      <p className="text-foreground-accent text-sm mb-4">{advisor.bio}</p>
-
-      <a
-        href={`mailto:${advisor.contact}`}
-        className="inline-flex items-center text-sm text-gray-600 hover:text-secondary transition-colors duration-300"
-      >
-        <FaEnvelope className="mr-2" />
-        Contact
-      </a>
-    </div>
-  );
-};
-
-export default Leadership;
+}

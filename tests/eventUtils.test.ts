@@ -22,7 +22,8 @@ const casualCoding: IRecurringEvent = {
     isFeatured: true,
     isRecurring: true,
     recurrencePattern: "weekly",
-    dayOfWeek: 4,
+    repeatInterval: 2,
+    daysOfWeek: [4],
     startDate: "2026-08-27",
     endDate: "2026-12-03",
     timeZone: "America/Chicago",
@@ -75,7 +76,7 @@ describe("Casual Coding schedule", () => {
         const afterMeeting = new Date("2026-08-28T01:30:00.000Z");
 
         assert.equal(isEventToday(casualCoding, duringMeeting), true);
-        assert.equal(occurrenceDate(afterMeeting.toISOString()), "2026-09-03");
+        assert.equal(occurrenceDate(afterMeeting.toISOString()), "2026-09-10");
         assert.equal(isEventToday(casualCoding, afterMeeting), false);
     });
 
@@ -109,7 +110,8 @@ describe("Casual Coding schedule", () => {
             ...casualCoding,
             title: "Sunday meetup",
             date: "Every Sunday",
-            dayOfWeek: 0,
+            repeatInterval: 1,
+            daysOfWeek: [0],
             startDate: "2026-08-30",
             endDate: "2026-09-13",
         };
@@ -119,6 +121,44 @@ describe("Casual Coding schedule", () => {
                 ?.toISOString()
                 .slice(0, 10),
             "2026-08-30",
+        );
+    });
+
+    it("supports more than one meeting day in an active week", () => {
+        const multiDayEvent: IRecurringEvent = {
+            ...casualCoding,
+            title: "Study group",
+            date: "Every Tuesday and Thursday",
+            repeatInterval: 1,
+            daysOfWeek: [2, 4],
+            startDate: "2026-09-01",
+            endDate: "2026-09-17",
+        };
+
+        assert.equal(
+            getNextOccurrence(multiDayEvent, new Date("2026-09-02T17:00:00.000Z"))
+                ?.toISOString()
+                .slice(0, 10),
+            "2026-09-03",
+        );
+    });
+
+    it("anchors every-three-week schedules to the starting week", () => {
+        const everyThreeWeeks: IRecurringEvent = {
+            ...casualCoding,
+            title: "Project check-in",
+            date: "Every 3 weeks on Monday and Thursday",
+            repeatInterval: 3,
+            daysOfWeek: [1, 4],
+            startDate: "2026-08-27",
+            endDate: "2026-10-31",
+        };
+
+        assert.equal(
+            getNextOccurrence(everyThreeWeeks, new Date("2026-08-28T17:00:00.000Z"))
+                ?.toISOString()
+                .slice(0, 10),
+            "2026-09-14",
         );
     });
 });

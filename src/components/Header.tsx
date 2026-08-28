@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { HiOutlineXMark, HiBars3 } from 'react-icons/hi2';
 import Image from 'next/image';
@@ -11,6 +11,33 @@ import { menuItems } from '@/data/menuItems';
 
 const Header: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        let layoutTimer: number | undefined;
+        const alignHashTarget = () => {
+            const id = decodeURIComponent(window.location.hash.slice(1));
+            if (!id) return;
+
+            document.getElementById(id)?.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                    ? 'auto'
+                    : 'smooth',
+                block: 'start',
+            });
+        };
+        const alignAfterLayout = () => {
+            window.clearTimeout(layoutTimer);
+            alignHashTarget();
+            layoutTimer = window.setTimeout(alignHashTarget, 500);
+        };
+
+        alignAfterLayout();
+        window.addEventListener('hashchange', alignAfterLayout);
+        return () => {
+            window.clearTimeout(layoutTimer);
+            window.removeEventListener('hashchange', alignAfterLayout);
+        };
+    }, []);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -25,9 +52,9 @@ const Header: React.FC = () => {
                         <Image 
                             src="/images/logo.svg"
                             alt="Newman Coding Club Logo" 
-                            width={28} 
-                            height={28} 
-                            className="min-w-fit w-7 h-7" 
+                            width={59}
+                            height={28}
+                            className="h-7 w-auto"
                         />
                         <span className="manrope text-sm md:text-xl font-semibold text-foreground cursor-pointer whitespace-nowrap">
                             {siteDetails.siteName}

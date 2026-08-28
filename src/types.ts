@@ -26,20 +26,14 @@ export interface IProject {
     };
 }
 
-export interface ILeader {
+export interface ILeadershipMember {
+    id: number;
     name: string;
     role: string;
     bio: string;
-    avatar: string;
-    contact: string;
-}
-
-export interface IAdvisor {
-    name: string;
-    role: string;
-    bio: string;
-    avatar: string;
-    contact: string;
+    email: string | null;
+    imageUrl: string | null;
+    kind: 'officer' | 'advisor';
 }
 
 export interface IBenefitBullet {
@@ -90,7 +84,8 @@ export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export interface IRecurringEvent extends IEventBase {
     isRecurring: true;
     recurrencePattern: 'weekly';
-    dayOfWeek: Weekday;
+    repeatInterval: number;
+    daysOfWeek: Weekday[];
     startDate: string;
     endDate: string;
     timeZone: string;

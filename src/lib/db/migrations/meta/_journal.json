@@ -43,6 +43,13 @@
       "when": 1787874101973,
       "tag": "0005_member-signups",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787932497071,
+      "tag": "0006_hard_robbie_robertson",
+      "breakpoints": true
     }
   ]
 }

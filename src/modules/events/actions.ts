@@ -28,7 +28,13 @@ const eventInputSchema = z
     date: z.string().trim(),
     startDate: z.string().trim(),
     endDate: z.string().trim(),
-    dayOfWeek: z.number().int().min(0).max(6),
+    repeatInterval: z.number().int().min(1).max(52),
+    daysOfWeek: z
+      .array(z.number().int().min(0).max(6))
+      .max(7)
+      .refine((days) => new Set(days).size === days.length, {
+        message: 'Choose each meeting day only once.',
+      }),
     startTime: z.string().regex(timePattern, 'Choose a start time.'),
     endTime: z.string().regex(timePattern, 'Choose an end time.'),
     timeZone: z.string().trim().min(1).max(100),
@@ -84,27 +90,32 @@ const eventInputSchema = z
       context.addIssue({
         code: 'custom',
         path: ['endDate'],
-        message: 'Final meeting must be on or after the first meeting.',
+        message: 'Series end must be on or after its start.',
+      });
+    }
+    if (event.daysOfWeek.length === 0) {
+      context.addIssue({
+        code: 'custom',
+        path: ['daysOfWeek'],
+        message: 'Choose at least one meeting day.',
       });
     }
     if (
       datePattern.test(event.startDate) &&
-      getUtcDayOfWeek(event.startDate) !== event.dayOfWeek
-    ) {
-      context.addIssue({
-        code: 'custom',
-        path: ['startDate'],
-        message: 'First meeting must fall on the selected meeting day.',
-      });
-    }
-    if (
       datePattern.test(event.endDate) &&
-      getUtcDayOfWeek(event.endDate) !== event.dayOfWeek
+      event.endDate >= event.startDate &&
+      event.daysOfWeek.length > 0 &&
+      !hasOccurrenceInRange(
+        event.startDate,
+        event.endDate,
+        event.repeatInterval,
+        event.daysOfWeek,
+      )
     ) {
       context.addIssue({
         code: 'custom',
-        path: ['endDate'],
-        message: 'Final meeting must fall on the selected meeting day.',
+        path: ['daysOfWeek'],
+        message: 'Those meeting days do not occur within the series date range.',
       });
     }
   });
@@ -132,7 +143,8 @@ export async function saveEventAction(
     date: input.kind === 'single' && input.date ? input.date : null,
     startDate: input.kind === 'weekly' ? input.startDate : null,
     endDate: input.kind === 'weekly' ? input.endDate : null,
-    dayOfWeek: input.kind === 'weekly' ? input.dayOfWeek : null,
+    repeatInterval: input.kind === 'weekly' ? input.repeatInterval : 1,
+    daysOfWeek: input.kind === 'weekly' ? input.daysOfWeek : [],
     startTime: input.startTime,
     endTime: input.endTime,
     timeZone: input.timeZone,
@@ -235,7 +247,10 @@ function readEventInput(formData: FormData) {
     date: formData.get('date') ?? '',
     startDate: formData.get('startDate') ?? '',
     endDate: formData.get('endDate') ?? '',
-    dayOfWeek: Number(formData.get('dayOfWeek') ?? 0),
+    repeatInterval: Number(formData.get('repeatInterval') ?? 1),
+    daysOfWeek: formData
+      .getAll('daysOfWeek')
+      .map((value) => Number(value)),
     startTime: formData.get('startTime'),
     endTime: formData.get('endTime'),
     timeZone: formData.get('timeZone') ?? 'America/Chicago',
@@ -268,8 +283,30 @@ function isValidHttpUrl(value: string): boolean {
   }
 }
 
-function getUtcDayOfWeek(value: string): number {
-  return new Date(`${value}T00:00:00Z`).getUTCDay();
+function hasOccurrenceInRange(
+  startValue: string,
+  endValue: string,
+  repeatInterval: number,
+  daysOfWeek: number[],
+): boolean {
+  const start = new Date(`${startValue}T00:00:00Z`);
+  const end = new Date(`${endValue}T00:00:00Z`);
+  const anchorWeek = new Date(start);
+  anchorWeek.setUTCDate(anchorWeek.getUTCDate() - anchorWeek.getUTCDay());
+
+  for (const candidate = new Date(start); candidate <= end; candidate.setUTCDate(candidate.getUTCDate() + 1)) {
+    if (!daysOfWeek.includes(candidate.getUTCDay())) continue;
+
+    const candidateWeek = new Date(candidate);
+    candidateWeek.setUTCDate(candidateWeek.getUTCDate() - candidateWeek.getUTCDay());
+    const weeksSinceStart = Math.floor(
+      (candidateWeek.getTime() - anchorWeek.getTime()) / (7 * 24 * 60 * 60 * 1000),
+    );
+
+    if (weeksSinceStart % repeatInterval === 0) return true;
+  }
+
+  return false;
 }
 
 function invalidateEventViews(): void {
