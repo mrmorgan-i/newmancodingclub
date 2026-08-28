@@ -212,4 +212,5 @@ function invalidateLeadershipViews(): void {
   revalidatePath('/');
   revalidatePath('/admin');
   revalidatePath('/admin/leadership');
+  revalidatePath('/leadership/history');
 }

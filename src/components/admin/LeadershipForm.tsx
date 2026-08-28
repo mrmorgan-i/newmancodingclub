@@ -148,6 +148,11 @@ export default function LeadershipForm({
             />
           </Field>
 
+          <p className="-mt-1 text-xs leading-5 text-[#6f8184] sm:col-span-2">
+            Published records appear during their term, then move to Past Leadership after the
+            end date. Leave both dates blank for ongoing roles.
+          </p>
+
           <Field
             label="Display order"
             hint="Lower numbers appear first"

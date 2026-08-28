@@ -80,17 +80,17 @@ const Footer: React.FC = () => {
                             <Image 
                                 src="/images/newman-university-logo.png" 
                                 alt="Newman University" 
-                                width={128} 
-                                height={128} 
-                                className="h-6 w-32 md:h-8 md:w-40"
+                                width={1280}
+                                height={241}
+                                className="h-6 w-auto md:h-8"
                             />
                         </a>
                         <a href="https://devict.org" target="_blank" rel="noopener noreferrer" aria-label="devICT" className="inline-block">
                             <Image 
                                 src="/images/devict-logo.png"
                                 alt="devICT"
-                                width={128}
-                                height={128}
+                                width={288}
+                                height={72}
                                 className="h-6 w-auto md:h-8"
                             />
                         </a>

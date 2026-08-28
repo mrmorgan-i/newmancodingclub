@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { HiOutlineEnvelope, HiOutlineUser } from 'react-icons/hi2';
+import Link from 'next/link';
+import { HiOutlineClock, HiOutlineEnvelope, HiOutlineUser } from 'react-icons/hi2';
 
 import { getPublishedLeadership } from '@/modules/leadership/queries';
 import type { ILeadershipMember } from '@/types';
@@ -25,6 +26,15 @@ export default async function Leadership() {
       {advisors.length > 0 && (
         <LeadershipGroup title="Faculty Advisors" members={advisors} />
       )}
+      <div className="text-center">
+        <Link
+          href="/leadership/history"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:border-primary hover:bg-primary/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <HiOutlineClock className="size-4" />
+          View past leadership
+        </Link>
+      </div>
     </div>
   );
 }

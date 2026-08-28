@@ -34,6 +34,8 @@ export interface ILeadershipMember {
     email: string | null;
     imageUrl: string | null;
     kind: 'officer' | 'advisor';
+    termStart: string | null;
+    termEnd: string | null;
 }
 
 export interface IBenefitBullet {

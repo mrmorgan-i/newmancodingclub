@@ -1,6 +1,18 @@
 import 'server-only';
 
-import { and, asc, eq, gte, isNull, lte, or, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  isNotNull,
+  isNull,
+  lt,
+  lte,
+  or,
+  type SQL,
+} from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 
 import { dateOnlyInTimeZone } from '@/lib/dateOnly';
@@ -31,12 +43,31 @@ export const getPublishedLeadership = unstable_cache(
   },
 );
 
+export const getPastLeadership = unstable_cache(
+  async (): Promise<ILeadershipMember[]> => {
+    const today = dateOnlyInTimeZone(new Date(), 'America/Chicago');
+    return leadershipQuery(
+      and(
+        eq(leadershipMember.status, 'published'),
+        isNotNull(leadershipMember.termEnd),
+        lt(leadershipMember.termEnd, today),
+      ),
+      'past',
+    );
+  },
+  ['past-leadership-v3'],
+  {
+    tags: [LEADERSHIP_CACHE_TAG],
+    revalidate: 60 * 60,
+  },
+);
+
 export async function getAdminLeadership() {
   await requireAdmin();
   return leadershipQuery();
 }
 
-function leadershipQuery(condition?: SQL) {
+function leadershipQuery(condition?: SQL, order: 'default' | 'past' = 'default') {
   const query = db
     .select({
       id: leadershipMember.id,
@@ -64,6 +95,15 @@ function leadershipQuery(condition?: SQL) {
     );
 
   const ordered = condition ? query.where(condition) : query;
+  if (order === 'past') {
+    return ordered.orderBy(
+      desc(leadershipMember.termEnd),
+      asc(leadershipMember.kind),
+      asc(leadershipMember.sortOrder),
+      asc(leadershipMember.id),
+    );
+  }
+
   return ordered.orderBy(
     asc(leadershipMember.kind),
     asc(leadershipMember.sortOrder),
