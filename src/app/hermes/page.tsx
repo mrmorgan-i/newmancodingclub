@@ -137,7 +137,11 @@ export default function HermesPage() {
               In the sidebar on the left, go to Messaging, then Telegram, then Create with QR. Scan the code with
               Telegram on your phone and confirm. Hermes makes a bot that only you can talk to.
             </p>
-            <p>Send your new bot &quot;hi&quot;. If it answers, you&apos;re texting your laptop.</p>
+            <p>
+              Go back to Hermes and click Save if it asks, then send your new bot &quot;hi&quot;. If it
+              answers, you&apos;re texting your laptop. If it asks about a home channel, send it{' '}
+              <Mono>/sethome</Mono>.
+            </p>
             <Other summary="In a terminal instead">
               <CopyCommand text="hermes gateway setup" />
               <p>Choose Telegram, then Automatic, and scan the code.</p>
@@ -201,6 +205,28 @@ export default function HermesPage() {
             <CopyCommand text="hermes gateway restart" />
             <p>Now text your bot:</p>
             <CopyCommand text="what's due this week?" />
+            <Other summary="Want it to read your classes too, like files, readings and announcements?">
+              <p>
+                The calendar link only has due dates and instructions. To go further, Hermes can sign
+                in to Canvas with a browser. Install this second skill in the chat:
+              </p>
+              <CopyCommand text="/skills install https://newmancoding.club/hermes/canvas-content/SKILL.md" />
+              <p>Then in a terminal, so it stays signed in:</p>
+              <CopyCommand text="hermes config set browser.user_data_dir canvas-browser" />
+              <CopyCommand text="hermes gateway restart" />
+              <p>Now ask it, in the app and not on Telegram, since it needs to pop up a login box:</p>
+              <CopyCommand text="log into Canvas at newmanu.instructure.com/login/canvas and tell me the newest thing posted in one of my classes" />
+              <p>
+                Type your Canvas login in the box it shows you. Hermes says it stays encrypted on your
+                laptop and the AI never sees it. If the password doesn&apos;t work, use Forgot Password
+                on that Canvas page.
+              </p>
+              <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-950">
+                Once it&apos;s signed in, it could do anything you can do in Canvas, including submit
+                work. The skill tells it to only read, but that&apos;s an instruction and not a lock,
+                so this one is your call.
+              </div>
+            </Other>
             <p className="text-sm text-slate-600">
               Canvas&apos;s calendar doesn&apos;t know what you&apos;ve already turned in, so some of what
               it lists might be done. Also, every class has its own AI rules, so check your syllabus
