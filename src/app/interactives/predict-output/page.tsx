@@ -89,15 +89,30 @@ export default function PredictOutputPage() {
 
   const choices = program === 'heart' ? ['Too fast', 'Normal'] : ['0', '1', '2', '3', '4'];
   const answer = steps.length > 0 ? steps[steps.length - 1].output ?? '' : '';
-  const running = stepIndex >= 0 && stepIndex < steps.length - 1;
+  const stepping = stepIndex >= 0 && stepIndex < steps.length - 1;
   const finished = stepIndex === steps.length - 1 && steps.length > 0;
   const current = stepIndex >= 0 ? steps[stepIndex] : null;
 
+  const nextStep = () => setStepIndex((prev) => (prev >= 0 && prev < steps.length - 1 ? prev + 1 : prev));
+  const backStep = () => setStepIndex((prev) => (prev > 0 && prev < steps.length - 1 ? prev - 1 : prev));
+  const runToEnd = () => setStepIndex((prev) => (prev >= 0 ? steps.length - 1 : prev));
+
   useEffect(() => {
-    if (!running) return;
-    const timer = setTimeout(() => setStepIndex((prev) => prev + 1), 900);
-    return () => clearTimeout(timer);
-  }, [running, stepIndex]);
+    if (!stepping) return;
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target && target.tagName === 'INPUT') return;
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        setStepIndex((prev) => Math.min(prev + 1, steps.length - 1));
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        setStepIndex((prev) => Math.max(prev - 1, 0));
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [stepping, steps.length]);
 
   useEffect(() => {
     if (finished && guess !== null) {
@@ -137,7 +152,7 @@ export default function PredictOutputPage() {
       <div className="rounded-3xl border border-white/10 bg-slate-900 px-6 py-8">
         <h1 className="text-4xl font-bold manrope text-white">Predict the Output</h1>
         <p className="mt-3 max-w-3xl text-lg text-slate-300">
-          Read the Python program and pick what you think it prints. Then watch it run one line at a time. Change the numbers and try again.
+          Read the Python program and pick what you think it prints. Then step through it one line at a time, the way a debugger does. Change the numbers and try again.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           {[
@@ -242,6 +257,34 @@ export default function PredictOutputPage() {
           <div className="rounded-3xl border border-white/10 bg-slate-900 p-6">
             <p className="text-sm text-slate-400">What Python is doing</p>
             <p className="mt-2 min-h-8 text-xl text-white">{current ? current.note : 'Pick an answer to start.'}</p>
+            {stepIndex >= 0 && (
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <button
+                  onClick={nextStep}
+                  disabled={!stepping}
+                  className="rounded-full bg-primary px-7 py-3 text-lg font-semibold text-white transition hover:bg-primary-accent disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next line
+                </button>
+                <button
+                  onClick={backStep}
+                  disabled={!stepping || stepIndex === 0}
+                  className="rounded-full border border-white/15 px-5 py-3 text-lg font-semibold text-slate-100 transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={runToEnd}
+                  disabled={!stepping}
+                  className="rounded-full border border-white/15 px-5 py-3 text-lg font-semibold text-slate-100 transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Run to end
+                </button>
+                <span className="text-slate-400">
+                  Step {stepIndex + 1} of {steps.length}
+                </span>
+              </div>
+            )}
             <p className="mt-5 text-sm text-slate-400">Output</p>
             <p className="mt-2 min-h-10 font-mono text-3xl text-emerald-300">{finished ? answer : ''}</p>
           </div>
@@ -262,7 +305,7 @@ export default function PredictOutputPage() {
 
           {stepIndex === -1 && (
             <p className="flex items-center gap-2 text-slate-400">
-              <PlayIcon className="h-5 w-5" /> The program runs as soon as you pick.
+              <PlayIcon className="h-5 w-5" /> After you pick, tap Next line to run the program one line at a time.
             </p>
           )}
         </div>
