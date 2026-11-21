@@ -7,6 +7,8 @@ import {
   CodeBracketSquareIcon,
   ChevronRightIcon,
   ArrowLeftIcon,
+  BeakerIcon,
+  HeartIcon,
 } from '@heroicons/react/24/outline';
 import Container from '@/components/Container';
 
@@ -27,6 +29,32 @@ interface InteractiveActivity {
 
 // Array of interactive activities
 const activities: InteractiveActivity[] = [
+  {
+    id: 'malaria-cells',
+    title: 'Spot the Malaria',
+    description: 'Real blood cell images from a medical dataset. Tap the cells you think are infected, then check.',
+    href: '/interactives/malaria-cells',
+    icon: BeakerIcon,
+    bgColor: 'bg-red-500',
+    iconColor: 'text-red-100',
+    tags: ['Game', 'Health', 'Images', 'Beginner-Friendly'],
+    difficulty: 'Beginner',
+    duration: '2 min',
+    status: 'New',
+  },
+  {
+    id: 'predict-output',
+    title: 'Predict the Output',
+    description: 'Read a short Python program, guess what it prints, then watch it run line by line. Change the numbers and try again.',
+    href: '/interactives/predict-output',
+    icon: HeartIcon,
+    bgColor: 'bg-amber-500',
+    iconColor: 'text-amber-100',
+    tags: ['Python', 'Health', 'Beginner-Friendly'],
+    difficulty: 'Beginner',
+    duration: '3 min',
+    status: 'New',
+  },
   {
     id: 'drum-kit',
     title: 'Web Drum Kit',
@@ -108,12 +136,12 @@ export default function InteractivesPage() {
     {
       label: 'Quick wins',
       description: 'Fast icebreakers for meetings or study sessions.',
-      items: ['mad-libs', 'color-matcher'],
+      items: ['malaria-cells', 'mad-libs', 'color-matcher'],
     },
     {
       label: 'Level up',
       description: 'Keep your brain moving with short challenges.',
-      items: ['http-errors', 'code-quiz'],
+      items: ['predict-output', 'http-errors', 'code-quiz'],
     },
     {
       label: 'Creative labs',
